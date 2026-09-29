@@ -54,3 +54,5 @@ To facilitate the visualization and understanding, we will use several terminals
 4. [The Irrigation Agent](./02_smart-greenhouse/04_the-irrigation-agent.md) - automate the watering decision - **learning how cells send commands to each other.**
 5. [The Dashboard](./02_smart-greenhouse/05_the-dashboard.md) - put the bed on a web page served through the gateway - **learning how cells face the browser.**
 6. [The Finale](./02_smart-greenhouse/06_the-finale.md) - play with the swarm, tear it down, and bring it all back with one command - **learning how `app_specs.yml` ships an application as one unit.**
+
+The complete code of the tutorial can be found in the Myrmic repository on GitHub at [`examples/greenhouse`](https://github.com/peeriot/myrmic/tree/master/examples/greenhouse). Reach for it if you get stuck or something does not behave as expected - but building it yourself is the point of the tutorial.
