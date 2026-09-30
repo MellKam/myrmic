@@ -610,8 +610,12 @@ fn linux_runtime_deps(repo: &models::Repo) -> String {
             )
         ),
     ];
+    // Only what the generated pipeline calls: `#[tokio::main]` (macros,
+    // rt-multi-thread), `tokio::spawn` (rt), `tokio::time::interval` (time)
+    // and `tokio::signal::ctrl_c` (signal). The runtime crates declare their own.
     lines.push(String::from(
-        "tokio                 = { version = \"1\", features = [\"full\"] }",
+        "tokio                 = { version = \"1\", \
+         features = [\"rt-multi-thread\", \"macros\", \"signal\", \"time\"] }",
     ));
     lines.push(String::from(
         "tokio-stream          = { version = \"0.1\", features = [\"time\"] }",
