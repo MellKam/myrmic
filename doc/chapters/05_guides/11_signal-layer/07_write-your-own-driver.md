@@ -332,3 +332,8 @@ a pipeline can point at it.
 
 From there, the [board file](./01_describe-your-hardware.md) decides where the device is wired
 and the [pipeline](./02_design-your-pipeline.md) decides what happens to its values.
+
+## See also
+
+- [Write your own step](./08_write-your-own-step.md) - writing a step
+- [Drivers](../../10_reference/04_signal-layer/03_drivers.md) - the available drivers
