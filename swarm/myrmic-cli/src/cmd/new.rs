@@ -4,8 +4,9 @@ use crate::args::Ctx;
 use crate::determine_name;
 use crate::utils::validate_name;
 
-mod pins;
 mod project;
+
+pub(crate) use project::{render_project, seed_lockfile, write_partitions};
 
 #[derive(clap::Parser)]
 pub struct New {
@@ -19,12 +20,6 @@ pub struct New {
     #[clap(short, long, num_args = 0..=1, default_missing_value = "esp32c6")]
     firmware: Option<Chip>,
 
-    /// Also scaffold a Signal Layer pipeline (board.yml + pipeline.yml). With
-    /// --firmware the pipeline is generated into the firmware image; on its own
-    /// it scaffolds a standalone Linux pipeline project.
-    #[clap(long)]
-    pipeline: bool,
-
     #[clap(long, alias = "repo")]
     sdk: Option<String>,
 }
@@ -35,28 +30,22 @@ pub fn handle(ctx: &Ctx, cmd: New) -> anyhow::Result<()> {
         name,
         sdk: repo,
         firmware,
-        pipeline,
     } = cmd;
 
     let name = determine_name(name.as_deref(), &path)?;
 
     validate_name(name)?;
 
-    match (firmware, pipeline) {
-        (Some(chip), true) => {
-            crate::info!(ctx, "Creating firmware pipeline '{}' for {}", name, chip);
-        }
-        (Some(chip), false) => crate::info!(ctx, "Creating firmware '{}' for {}", name, chip),
-        (None, true) => crate::info!(ctx, "Creating Linux pipeline '{}'", name),
-        (None, false) => crate::info!(ctx, "Creating '{}'", name),
+    match firmware {
+        Some(chip) => crate::info!(ctx, "Creating firmware '{}' for {}", name, chip),
+        None => crate::info!(ctx, "Creating '{}'", name),
     }
 
     let repo = crate::utils::resolve_repo(ctx, repo.as_deref())?;
-
-    project::render(&repo, name, firmware, pipeline, &path)?;
+    project::render(&repo, name, firmware, &path)?;
 
     if let Some(chip) = firmware {
-        project::write_partitions(chip, &path)?;
+        write_partitions(chip, &path)?;
     }
 
     Ok(())
@@ -67,11 +56,12 @@ mod tests {
     use super::*;
     use clap::Parser as _;
 
-    /// The module scaffolds live under `myrmic signal-layer`; `new` no longer
-    /// knows the flags.
+    /// The Signal Layer scaffolds live under `myrmic signal-layer`; `new` no
+    /// longer knows the flags.
     #[test]
-    fn the_signal_layer_module_flags_are_gone() {
+    fn the_signal_layer_flags_are_gone() {
         for args in [
+            ["new", "foo", "--pipeline"],
             ["new", "foo", "--driver=i2c"],
             ["new", "foo", "--step"],
             ["new", "foo", "--registry-dir=."],

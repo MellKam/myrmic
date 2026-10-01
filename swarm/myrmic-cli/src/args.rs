@@ -97,7 +97,7 @@ pub enum Command {
     ///
     /// Creates a fresh Rust crate wired up against peeriot's `myrmic_sdk`, ready to build.
     New(new::New),
-    /// Scaffold Signal Layer modules: drivers and processing steps.
+    /// Scaffold for the Signal Layer: a pipeline project, drivers and processing steps.
     ///
     /// `myrmic sl` is the short spelling.
     #[clap(visible_alias = "sl")]

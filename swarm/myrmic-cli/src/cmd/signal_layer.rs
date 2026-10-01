@@ -4,6 +4,8 @@ use crate::args::Ctx;
 
 mod driver;
 mod module;
+mod new;
+mod pins;
 mod step;
 
 #[derive(clap::Parser)]
@@ -14,6 +16,9 @@ pub struct SignalLayer {
 
 #[derive(clap::Subcommand)]
 enum Cmd {
+    /// Scaffold a pipeline project: a standalone Linux pipeline, or with
+    /// --firmware an ESP32 firmware that generates the pipeline into its image.
+    New(new::New),
     /// Scaffold a driver module: talks to a device on a bus and produces taps.
     Driver(driver::Driver),
     /// Scaffold a step module: processes taps into new taps.
@@ -22,6 +27,7 @@ enum Cmd {
 
 pub fn handle(ctx: &Ctx, cmd: SignalLayer) -> anyhow::Result<()> {
     match cmd.cmd {
+        Cmd::New(cmd) => new::handle(ctx, cmd),
         Cmd::Driver(cmd) => driver::handle(ctx, cmd),
         Cmd::Step(cmd) => step::handle(ctx, cmd),
     }
@@ -31,6 +37,27 @@ pub fn handle(ctx: &Ctx, cmd: SignalLayer) -> anyhow::Result<()> {
 mod tests {
     use super::*;
     use clap::Parser as _;
+    use myrmic_build::firmware::Chip;
+
+    fn new_firmware(args: &[&str]) -> Option<Chip> {
+        match SignalLayer::try_parse_from(args).unwrap().cmd {
+            Cmd::New(new) => new.firmware,
+            _ => panic!("not `new`"),
+        }
+    }
+
+    #[test]
+    fn new_is_a_linux_pipeline_unless_a_firmware_is_asked_for() {
+        assert_eq!(new_firmware(&["signal-layer", "new", "demo"]), None);
+        assert_eq!(
+            new_firmware(&["signal-layer", "new", "demo", "--firmware"]),
+            Some(Chip::Esp32c6)
+        );
+        assert_eq!(
+            new_firmware(&["signal-layer", "new", "--firmware=esp32c5", "demo"]),
+            Some(Chip::Esp32c5)
+        );
+    }
 
     #[test]
     fn driver_requires_a_bus() {
