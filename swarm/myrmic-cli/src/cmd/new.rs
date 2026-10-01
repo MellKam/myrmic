@@ -83,6 +83,9 @@ struct TemplateNewFirmware<'a> {
 struct TemplateNewFirmwarePipeline<'a> {
     name: &'a str,
     chip: &'a str,
+    scl: u8,
+    sda: u8,
+    general_purpose: String,
     firmware_sdk: models::CargoDep,
     firmware_build: models::CargoDep,
     module_deps: String,
@@ -192,12 +195,6 @@ pub fn handle(ctx: &Ctx, cmd: New) -> anyhow::Result<()> {
         if let Err(e) = std::fs::write(&dst, partitions) {
             return Err(anyhow::Error::new(e).context(format!("failed to write {}", dst.display())));
         }
-    }
-
-    match (firmware, pipeline) {
-        (Some(chip), true) => write_pipeline_yamls(name, &path, chip)?,
-        (None, true) => write_linux_pipeline_yamls(name, &path)?,
-        _ => {}
     }
 
     Ok(())
@@ -361,6 +358,11 @@ fn render_project(
 
     let result = match (firmware, pipeline) {
         (Some(chip), true) => {
+            let BoardPins {
+                scl,
+                sda,
+                general_purpose,
+            } = board_pins(chip.name())?;
             let firmware_sdk = repo
                 .clone()
                 .resolve_or_assume_correct("embedded/esp-hal/crates/esp-firmware");
@@ -372,6 +374,9 @@ fn render_project(
             TemplateNewFirmwarePipeline {
                 name,
                 chip: chip.name(),
+                scl,
+                sda,
+                general_purpose,
                 firmware_sdk,
                 firmware_build,
                 module_deps,
@@ -472,56 +477,30 @@ fn optional_dep(dep: &models::CargoDep) -> String {
     }
 }
 
-/// Writes `board.yml` and `pipeline.yml` next to a scaffolded pipeline firmware.
-fn write_pipeline_yamls(name: &str, path: &std::path::Path, chip: Chip) -> anyhow::Result<()> {
-    let board = generate_board_yaml(name, chip.name())?;
-    std::fs::write(path.join("board.yml"), board)
-        .with_context(|| format!("writing {}", path.join("board.yml").display()))?;
-    std::fs::write(path.join("pipeline.yml"), generate_pipeline_yaml(name))
-        .with_context(|| format!("writing {}", path.join("pipeline.yml").display()))?;
-    Ok(())
+/// The example i2c bus pins for `chip` and, rendered as the board manifest's
+/// `general_purpose` list, every other usable GPIO.
+struct BoardPins {
+    scl: u8,
+    sda: u8,
+    general_purpose: String,
 }
 
-/// A starter board manifest: an example i2c bus, every usable GPIO for the chip
-/// (minus the bus pins) offered to the cell, and a headless `sim-source` device.
-fn generate_board_yaml(name: &str, chip: &str) -> anyhow::Result<String> {
+fn board_pins(chip: &str) -> anyhow::Result<BoardPins> {
     let usable = esp_codegen::chip_general_purpose_pins(chip)
         .with_context(|| format!("no GPIO layout for chip `{chip}`"))?;
     let (scl, sda) = pick_bus_pins(chip, &usable)?;
-    let gp = usable
+    let general_purpose = usable
         .iter()
         .copied()
         .filter(|pin| *pin != scl && *pin != sda)
         .map(|pin| pin.to_string())
         .collect::<Vec<_>>()
         .join(", ");
-    Ok(format!(
-        "# Board manifest: the hardware the Signal Layer pipeline runs on.\n\
-         id: {name}\n\
-         chip: {chip}\n\
-         \n\
-         # Buses the pipeline may use. The sim-source device below is bound to\n\
-         # this bus for codegen symmetry but never touches it, so nothing needs\n\
-         # to be wired up to build and run.\n\
-         buses:\n\
-         \x20\x20i2c0:\n\
-         \x20\x20\x20\x20transport: i2c\n\
-         \x20\x20\x20\x20pins:\n\
-         \x20\x20\x20\x20\x20\x20scl: {scl}\n\
-         \x20\x20\x20\x20\x20\x20sda: {sda}\n\
-         \x20\x20\x20\x20freq_khz: 400\n\
-         \n\
-         # Every usable GPIO on this chip, minus the bus pins above. Pins listed\n\
-         # here that the pipeline does not claim are offered to the cell.\n\
-         gpios:\n\
-         \x20\x20general_purpose: [{gp}]\n\
-         \n\
-         # Devices on the buses. Swap sim-source for a real sensor once wired up.\n\
-         devices:\n\
-         \x20\x20- id: sim\n\
-         \x20\x20\x20\x20driver: sim-source\n\
-         \x20\x20\x20\x20bus: i2c0\n"
-    ))
+    Ok(BoardPins {
+        scl,
+        sda,
+        general_purpose,
+    })
 }
 
 /// Picks the example i2c bus pins: the conventional devkit pins for the chip
@@ -544,33 +523,6 @@ fn pick_bus_pins(chip: &str, usable: &[u8]) -> anyhow::Result<(u8, u8)> {
         .next()
         .context("chip needs at least two usable GPIOs for the example bus")?;
     Ok((scl, sda))
-}
-
-/// A starter pipeline: the headless `sim-source` ramp exposed as one tap.
-fn generate_pipeline_yaml(name: &str) -> String {
-    format!(
-        "# Signal Layer pipeline: sources, steps, and the taps the cell reads.\n\
-         pipeline:\n\
-         \x20\x20id: {name}\n\
-         \n\
-         # `sim` emits a deterministic ramp (0, 10, ... 100, 0, ...) so this\n\
-         # builds and runs with no hardware attached.\n\
-         sources:\n\
-         \x20\x20- id: sim\n\
-         \x20\x20\x20\x20device: sim\n\
-         \x20\x20\x20\x20config:\n\
-         \x20\x20\x20\x20\x20\x20sample_interval_ms: 500\n\
-         \x20\x20\x20\x20\x20\x20start: 0.0\n\
-         \x20\x20\x20\x20\x20\x20step: 10.0\n\
-         \x20\x20\x20\x20\x20\x20max: 100.0\n\
-         \n\
-         # A tap is a value the cell can read by name.\n\
-         taps:\n\
-         \x20\x20- name: sim_value\n\
-         \x20\x20\x20\x20kind: retained\n\
-         \x20\x20\x20\x20type: f32\n\
-         \x20\x20\x20\x20source: sim.value\n"
-    )
 }
 
 /// Renders the Linux Signal Layer runtime dependency lines: git or path for the
@@ -663,43 +615,6 @@ fn linux_module_deps(repo: &models::Repo) -> String {
         .map(|(name, path)| format!("{name} = {}", repo.clone().resolve_or_assume_correct(&path)))
         .collect::<Vec<_>>()
         .join("\n")
-}
-
-/// Writes `board.yml` and `pipeline.yml` for a Linux pipeline project.
-fn write_linux_pipeline_yamls(name: &str, path: &std::path::Path) -> anyhow::Result<()> {
-    std::fs::write(path.join("board.yml"), generate_linux_manifest_yaml(name))
-        .with_context(|| format!("writing {}", path.join("board.yml").display()))?;
-    std::fs::write(path.join("pipeline.yml"), generate_pipeline_yaml(name))
-        .with_context(|| format!("writing {}", path.join("pipeline.yml").display()))?;
-    Ok(())
-}
-
-/// A starter Linux device manifest: an i2c bus by `dev_path` and a headless
-/// sim-source device.
-fn generate_linux_manifest_yaml(name: &str) -> String {
-    format!(
-        "# Linux device manifest: the devices the pipeline reads.\n\
-         id: {name}\n\
-         chip: linux\n\
-         \n\
-         # I2C buses by their Linux character device.\n\
-         buses:\n\
-         \x20\x20i2c0:\n\
-         \x20\x20\x20\x20transport: i2c\n\
-         \x20\x20\x20\x20pins: {{}}\n\
-         \x20\x20\x20\x20freq_khz: 400\n\
-         \x20\x20\x20\x20dev_path: /dev/i2c-1\n\
-         \n\
-         gpios:\n\
-         \x20\x20general_purpose: []\n\
-         \n\
-         # sim-source is synthetic and ignores the bus, so this builds and runs\n\
-         # with no hardware. Swap it for a real sensor and set the bus dev_path.\n\
-         devices:\n\
-         \x20\x20- id: sim\n\
-         \x20\x20\x20\x20driver: sim-source\n\
-         \x20\x20\x20\x20bus: i2c0\n"
-    )
 }
 
 fn validate_name(name: &str) -> anyhow::Result<()> {
