@@ -3,9 +3,30 @@
 use anyhow::Context as _;
 use textus::Template as _;
 
-use super::Transport;
 use crate::args::Ctx;
-use crate::{determine_name, models};
+use crate::models;
+use crate::utils::validate_name;
+
+/// The bus a scaffolded driver talks over.
+#[derive(Clone, Copy, PartialEq, Eq, Debug, clap::ValueEnum)]
+pub(super) enum Bus {
+    I2c,
+    Spi,
+}
+
+/// What every module scaffold takes.
+#[derive(clap::Args)]
+pub(super) struct ModuleArgs {
+    /// The module id, e.g. `bme280`. The crate is created at
+    /// `<registry-dir>/<drivers|steps>/<ID>`.
+    pub(super) id: std::path::PathBuf,
+
+    /// Base directory the module is placed under, as `drivers/<id>` or
+    /// `steps/<id>` (default: the current directory). Point a pipeline's
+    /// build.rs at this directory to enumerate the modules in it.
+    #[clap(long)]
+    pub(super) registry_dir: Option<std::path::PathBuf>,
+}
 
 #[derive(textus::Template)]
 #[template(path = "templates/driver-i2c", strip_suffix = ".tmpl")]
@@ -35,29 +56,33 @@ struct TemplateNewStep<'a> {
 /// A Signal Layer module scaffold: a driver on a bus, or a processing step.
 #[derive(Clone, Copy)]
 pub(super) enum ModuleKind {
-    Driver(Transport),
+    Driver(Bus),
     Step,
 }
 
 /// Scaffolds an out-of-tree Signal Layer driver or step under
 /// `<registry_dir>/<drivers|steps>/<id>` - the layout a pipeline's `build.rs`
 /// enumerates via `build_pipeline(.., Some(<registry_dir>))` / `.include(..)`.
-pub(super) fn handle(
+/// `sdk` is where a step's `signal-layer-core` comes from; a driver depends on
+/// no myrmic crate.
+pub(super) fn scaffold(
     ctx: &Ctx,
     kind: ModuleKind,
-    positional: &std::path::Path,
-    name: Option<&str>,
-    repo: Option<&str>,
-    registry_dir: Option<&std::path::Path>,
+    args: ModuleArgs,
+    sdk: Option<&str>,
 ) -> anyhow::Result<()> {
+    let ModuleArgs { id, registry_dir } = args;
+
     // The positional argument is the module id, not a filesystem path.
-    if positional.components().count() != 1 {
+    if id.components().count() != 1 {
         anyhow::bail!(
             "pass just the module id (e.g. `bme280`), not a path; use --registry-dir for the location"
         );
     }
-    let id = determine_name(name, positional)?;
-    super::validate_name(id)?;
+    let id = id
+        .to_str()
+        .context("cannot create a module with a non-unicode id")?;
+    validate_name(id)?;
 
     let (subdir, kind_label, shipped, crate_name) = match kind {
         ModuleKind::Driver(_) => (
@@ -78,7 +103,7 @@ pub(super) fn handle(
     }
 
     let base = match registry_dir {
-        Some(dir) => dir.to_path_buf(),
+        Some(dir) => dir,
         None => std::env::current_dir().context("cannot determine the current directory")?,
     };
     let crate_dir = base.join(subdir).join(id);
@@ -86,7 +111,7 @@ pub(super) fn handle(
         anyhow::bail!("{} already exists", crate_dir.display());
     }
 
-    let repo = crate::utils::resolve_repo(ctx, repo)?;
+    let repo = crate::utils::resolve_repo(ctx, sdk)?;
 
     crate::info!(
         ctx,
@@ -123,13 +148,13 @@ fn render(
     }
 
     let result = match kind {
-        ModuleKind::Driver(Transport::I2c) => TemplateNewDriverI2c {
+        ModuleKind::Driver(Bus::I2c) => TemplateNewDriverI2c {
             id,
             crate_name,
             type_name: &type_name,
         }
         .render_into(crate_dir),
-        ModuleKind::Driver(Transport::Spi) => TemplateNewDriverSpi {
+        ModuleKind::Driver(Bus::Spi) => TemplateNewDriverSpi {
             id,
             crate_name,
             type_name: &type_name,
