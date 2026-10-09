@@ -52,7 +52,7 @@ A list of instances to deploy. Each entry references exactly one entry from `cla
 
 - `class` - References a cell `classes` entry by `id`.
 - `bridge` - References a bridge `classes` entry by `id`.
-- `sri` *(optional)* - SRI to deploy this instance under. Defaults to the referenced class id.
+- `srn` *(optional)* - SRN to deploy this instance under. Defaults to the referenced class id.
 - `tags` *(optional)* - Capability tags the target runtime must advertise - controls which runtimes this Cell is placed on. Defaults to an empty list, meaning it deploys to any runtime.
 - `init` *(optional)* - **Cell instances only.** Arguments delivered to the Cell's initialization handler on deploy. Encoded as JSON by default; a value that isn't valid JSON is sent as a JSON string.
 - `init_file` *(optional)* - **Cell instances only.** Path to a file relative to the app-spec directory, whose raw bytes are delivered verbatim to the Cell's initialization handler.
@@ -123,15 +123,15 @@ classes:
 
 instances:
   - class: my-cell-class-id-1
-    sri: my-cell-1
+    srn: my-cell-1
     tags: [my-tag-1]
 
   - class: my-cell-class-id-2
-    sri: my-cell-2
+    srn: my-cell-2
     tags: [my-tag-2]
 
   - bridge: my-mqtt-bridge
-    sri: bridge.mqtt
+    srn: bridge.mqtt
 ```
 
 ## See Also

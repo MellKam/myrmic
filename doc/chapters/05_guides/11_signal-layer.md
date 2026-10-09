@@ -94,3 +94,12 @@ Both platforms support sensors over I2C and SPI, actuators, and processing steps
 The platforms also run the Signal Layer differently. On embedded it is part of the firmware, so it is there whenever the cell is. On Linux it is a separate process that has to be running before a cell can use it.
 
 That difference has one symptom worth knowing. On Linux, if every tap a cell asks for comes back as not present, check that the pipeline process is running before you check the names in your pipeline file. A cell cannot tell the difference between a tap that does not exist and a pipeline that is not there.
+
+## See also
+
+- [Signal Layer reference](../10_reference/04_signal-layer.md) - the file formats, drivers and steps
+
+## Related SDK reference
+
+- [Signal taps](../10_reference/03_myrmic-sdk/07_signal-io/01_signal-taps.md)
+- [Signal outlets](../10_reference/03_myrmic-sdk/07_signal-io/02_signal-outlets.md)

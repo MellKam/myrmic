@@ -191,3 +191,8 @@ behaviours a description promises, and they are cheap to pin down.
 
 If you find a step hard to test, it is usually a sign it is doing something a step should not:
 reaching for time, for a slot, or for the outside world. That work belongs in a driver or a cell.
+
+## See also
+
+- [Write your own driver](./07_write-your-own-driver.md) - writing a driver
+- [Design your pipeline](./02_design-your-pipeline.md) - building a pipeline
