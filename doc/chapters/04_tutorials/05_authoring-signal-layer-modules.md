@@ -27,9 +27,11 @@ into a shared module library. Nothing here changes your checkout.
 ## What you need
 
 - The `myrmic` CLI and the Rust toolchain, per [Installation](../01_quickstart/01_installation.md).
-- A Myrmic checkout, so `myrmic new` can resolve the SDK. Point it there once:
+- A clone of the Myrmic repository, so `myrmic new` can resolve the SDK. Clone it and point
+  `myrmic new` there once:
 
   ```bash
+  git clone https://github.com/peeriot/myrmic.git ~/myrmic
   export PEERIOT_MYRMIC_SDK=~/myrmic   # the path to your clone
   ```
 
