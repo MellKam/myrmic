@@ -202,7 +202,7 @@ impl Bmp180 {
         // In real hardware: delay 4.5 ms here. Caller owns the timing.
         let mut raw = [0u8; 2];
         bus.write_read(addr, &[REG_DATA], &mut raw).await?;
-        let ut = i32::from(i16::from_be_bytes([raw[0], raw[1]]));
+        let ut = i32::from(u16::from_be_bytes([raw[0], raw[1]]));
 
         // Read raw pressure
         let press_cmd = CMD_PRESS_BASE | (oss << 6);
@@ -275,22 +275,83 @@ mod tests {
 
     const ADDR: u8 = 0x77;
 
+    // Datasheet Fig. 4 example calibration. MB is read but unused by the
+    // algorithm; its example value keeps the register image complete.
+    const DATASHEET_CAL: Calibration = Calibration {
+        ac1: 408,
+        ac2: -72,
+        ac3: -14383,
+        ac4: 32741,
+        ac5: 32757,
+        ac6: 23153,
+        b1: 6190,
+        b2: 4,
+        mc: -8711,
+        md: 2868,
+    };
+    const DATASHEET_MB: i16 = -32768;
+
+    // Half of the published output resolutions (0.1 °C, 0.01 hPa).
+    const T_TOLERANCE: f32 = 0.05;
+    const P_TOLERANCE: f32 = 0.005;
+
     fn cal_bytes() -> Vec<u8> {
-        // Datasheet example calibration values
-        let vals: [(u8, u8); 11] = [
-            (0x1D, 0xFD), // AC1
-            (0xFF, 0xB8), // AC2 = -72
-            (0xC7, 0xD1), // AC3 = -14383
-            (0x7F, 0xE5), // AC4 = 32741
-            (0x7F, 0xE5), // AC5 = 32741
-            (0x60, 0x00), // AC6 = 24576
-            (0x17, 0xD0), // B1  = 6096
-            (0x00, 0x04), // B2  = 4
-            (0x80, 0x00), // MB  = -32768 (unused)
-            (0xD4, 0xBD), // MC  = -11075
-            (0x0A, 0x7C), // MD  = 2684
-        ];
-        vals.iter().flat_map(|(h, l)| [*h, *l]).collect()
+        let c = &DATASHEET_CAL;
+        [
+            c.ac1.to_be_bytes(),
+            c.ac2.to_be_bytes(),
+            c.ac3.to_be_bytes(),
+            c.ac4.to_be_bytes(),
+            c.ac5.to_be_bytes(),
+            c.ac6.to_be_bytes(),
+            c.b1.to_be_bytes(),
+            c.b2.to_be_bytes(),
+            DATASHEET_MB.to_be_bytes(),
+            c.mc.to_be_bytes(),
+            c.md.to_be_bytes(),
+        ]
+        .concat()
+    }
+
+    /// One `sample()` round trip at `oss = 0`: temperature command and result,
+    /// pressure command and result.
+    fn sample_txns(ut: u16, up: u16) -> [T; 4] {
+        let [up_msb, up_lsb] = up.to_be_bytes();
+        [
+            T::write(ADDR, vec![REG_CTRL, CMD_TEMP]),
+            T::write_read(ADDR, vec![REG_DATA], ut.to_be_bytes().to_vec()),
+            T::write(ADDR, vec![REG_CTRL, CMD_PRESS_BASE]),
+            T::write_read(ADDR, vec![REG_DATA], vec![up_msb, up_lsb, 0x00]),
+        ]
+    }
+
+    /// Datasheet Fig. 4 transcribed with 64-bit intermediates; every `/ 2^n` is
+    /// an arithmetic shift, as in Bosch's reference driver.
+    #[allow(clippy::cast_precision_loss)]
+    fn reference(ut: u16, up: u32, oss: u8, cal: &Calibration) -> (f32, f32) {
+        let x1 = ((i64::from(ut) - i64::from(cal.ac6)) * i64::from(cal.ac5)) >> 15;
+        let x2 = (i64::from(cal.mc) << 11) / (x1 + i64::from(cal.md));
+        let b5 = x1 + x2;
+        let t = (b5 + 8) >> 4;
+
+        let b6 = b5 - 4000;
+        let x1 = (i64::from(cal.b2) * ((b6 * b6) >> 12)) >> 11;
+        let x2 = (i64::from(cal.ac2) * b6) >> 11;
+        let b3 = (((i64::from(cal.ac1) * 4 + x1 + x2) << oss) + 2) >> 2;
+        let x1 = (i64::from(cal.ac3) * b6) >> 13;
+        let x2 = (i64::from(cal.b1) * ((b6 * b6) >> 12)) >> 16;
+        let x3 = (x1 + x2 + 2) >> 2;
+        let b4 = (i64::from(cal.ac4) * (x3 + 32768)) >> 15;
+        let b7 = (i64::from(up) - b3) * (50000 >> oss);
+        let p = if b7 < 0x8000_0000 {
+            (b7 * 2) / b4
+        } else {
+            (b7 / b4) * 2
+        };
+        let x1 = ((p >> 8) * (p >> 8) * 3038) >> 16;
+        let x2 = (-7357 * p) >> 16;
+        let p = p + ((x1 + x2 + 3791) >> 4);
+        (t as f32 / 10.0, p as f32 / 100.0)
     }
 
     #[test]
@@ -391,6 +452,56 @@ mod tests {
             driver.init(&mut mock).await.unwrap(); // recovery re-init
             let readings = driver.sample(&mut mock).await.unwrap();
             assert!(readings.temperature > -40.0 && readings.temperature < 85.0);
+            mock.done();
+        });
+    }
+
+    #[test]
+    fn compensation_matches_datasheet_reference() {
+        // (UT, UP) at oss = 0: the datasheet worked example, points across the
+        // operating range on both sides of UT = 0x8000, and the data register
+        // reset value.
+        const POINTS: [(u16, u16); 6] = [
+            (0x6CFA, 0x5D23),
+            (0x7FE5, 0x7C43),
+            (0x8075, 0x7C01),
+            (0x84FD, 0x7A09),
+            (0x938A, 0x745E),
+            (0x8000, 0x7C36),
+        ];
+
+        // The worked example pins the transcription itself.
+        let (t, p) = reference(POINTS[0].0, u32::from(POINTS[0].1), 0, &DATASHEET_CAL);
+        assert!(
+            (t - 15.0).abs() < T_TOLERANCE && (p - 699.64).abs() < P_TOLERANCE,
+            "reference T={t} P={p}"
+        );
+
+        futures::executor::block_on(async {
+            let mut txns = vec![
+                T::write_read(ADDR, vec![REG_CHIP_ID], vec![CHIP_ID]),
+                T::write_read(ADDR, vec![REG_CALIB], cal_bytes()),
+            ];
+            for (ut, up) in POINTS {
+                txns.extend(sample_txns(ut, up));
+            }
+            let mut mock = Mock::new(&txns);
+            let mut driver = Bmp180::new(&Bmp180Config::default());
+            driver.init(&mut mock).await.unwrap();
+            for (ut, up) in POINTS {
+                let (t, p) = reference(ut, u32::from(up), 0, &DATASHEET_CAL);
+                let r = driver.sample(&mut mock).await.unwrap();
+                assert!(
+                    (r.temperature - t).abs() < T_TOLERANCE,
+                    "UT={ut:#06X}: T={} vs reference {t}",
+                    r.temperature
+                );
+                assert!(
+                    (r.pressure - p).abs() < P_TOLERANCE,
+                    "UP={up:#06X}: P={} vs reference {p}",
+                    r.pressure
+                );
+            }
             mock.done();
         });
     }
