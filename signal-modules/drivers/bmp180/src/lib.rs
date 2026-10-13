@@ -93,6 +93,14 @@ pub enum Bmp180Error<E: core::fmt::Debug> {
     Bus(E),
     /// Chip ID register did not return `0x55` — likely wrong device or wiring.
     InvalidId(u8),
+    /// A calibration word read as `0` or `0xFFFF`, which the datasheet (§3.4)
+    /// defines as a communication fault.
+    InvalidCalibration,
+    /// The datasheet algorithm has no result for this combination of raw
+    /// conversion and calibration (a division by zero, or an intermediate
+    /// outside its 32-bit range). Only reachable with register contents far
+    /// outside the operating range.
+    UndefinedCompensation,
 }
 
 impl<E: core::fmt::Debug> From<E> for Bmp180Error<E> {
@@ -141,12 +149,14 @@ impl Bmp180 {
     ///
     /// Safe to call repeatedly — the generated source task re-runs `init` to
     /// recover a sensor that started failing. The stored calibration is only
-    /// replaced once a full read succeeds.
+    /// replaced once a full read succeeds and passes the datasheet's word check.
     ///
     /// # Errors
     ///
     /// - [`Bmp180Error::Bus`] on any I2C transaction failure.
     /// - [`Bmp180Error::InvalidId`] if the chip ID register does not read `0x55`.
+    /// - [`Bmp180Error::InvalidCalibration`] if a calibration word reads `0` or
+    ///   `0xFFFF`.
     pub async fn init<I: I2c>(&mut self, bus: &mut I) -> Result<(), Bmp180Error<I::Error>> {
         let addr = self.cfg.i2c_addr;
 
@@ -159,6 +169,16 @@ impl Bmp180 {
         // Read 22 calibration bytes
         let mut raw = [0u8; 22];
         bus.write_read(addr, &[REG_CALIB], &mut raw).await?;
+        // Datasheet §3.4: no calibration word is ever 0 or 0xFFFF; either value
+        // means the read did not reach the chip's E²PROM.
+        if raw
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .any(|w| matches!(w, [0x00, 0x00] | [0xFF, 0xFF]))
+        {
+            return Err(Bmp180Error::InvalidCalibration);
+        }
 
         self.cal = Calibration {
             ac1: i16::from_be_bytes([raw[0], raw[1]]),
@@ -189,7 +209,9 @@ impl Bmp180 {
     ///
     /// # Errors
     ///
-    /// [`Bmp180Error::Bus`] on any I2C transaction failure.
+    /// - [`Bmp180Error::Bus`] on any I2C transaction failure.
+    /// - [`Bmp180Error::UndefinedCompensation`] if the datasheet algorithm has
+    ///   no result for the raw values.
     pub async fn sample<I: I2c>(
         &mut self,
         bus: &mut I,
@@ -202,7 +224,7 @@ impl Bmp180 {
         // In real hardware: delay 4.5 ms here. Caller owns the timing.
         let mut raw = [0u8; 2];
         bus.write_read(addr, &[REG_DATA], &mut raw).await?;
-        let ut = i32::from(u16::from_be_bytes([raw[0], raw[1]]));
+        let ut = i64::from(u16::from_be_bytes([raw[0], raw[1]]));
 
         // Read raw pressure
         let press_cmd = CMD_PRESS_BASE | (oss << 6);
@@ -212,10 +234,12 @@ impl Bmp180 {
         bus.write_read(addr, &[REG_DATA], &mut raw3).await?;
         // Datasheet §3.5: pressure result is a 19-bit value, right-shifted by (8 - oss).
         let raw_p =
-            (i32::from(raw3[0]) << 16 | i32::from(raw3[1]) << 8 | i32::from(raw3[2])) >> (8 - oss);
+            (i64::from(raw3[0]) << 16 | i64::from(raw3[1]) << 8 | i64::from(raw3[2])) >> (8 - oss);
 
-        let (b5, temperature) = compensate_temperature(ut, &self.cal);
-        let pressure = compensate_pressure(raw_p, b5, oss, &self.cal);
+        let (b5, temperature) =
+            compensate_temperature(ut, &self.cal).ok_or(Bmp180Error::UndefinedCompensation)?;
+        let pressure = compensate_pressure(raw_p, b5, oss, &self.cal)
+            .ok_or(Bmp180Error::UndefinedCompensation)?;
 
         log::debug!("[bmp180] T={temperature:.1}°C P={pressure:.1}hPa");
         Ok(Bmp180Readings {
@@ -225,47 +249,46 @@ impl Bmp180 {
     }
 }
 
-// Compensation (BMP180 datasheet §4.1.2 formulas)
+// Compensation (BMP180 datasheet §4.1.2 formulas). The datasheet types the
+// intermediates as 32-bit `long`, which overflows for register contents outside
+// the operating range; i64 keeps every product in range for any u16/i16 input
+// and agrees with the datasheet wherever its own arithmetic does not overflow.
+// Each `/ 2^n` is an arithmetic shift, as in Bosch's reference driver.
 
-// BMP180 datasheet §4.1.2 formula: final result is temperature in 0.1°C units divided by 10;
-// the i32→f32 precision loss is acceptable for the sensor's ±0.1°C output resolution.
+// Returns B5 for the pressure step and the temperature in 0.1°C units divided
+// by 10; the i64→f32 precision loss is within the sensor's output resolution.
 #[allow(clippy::cast_precision_loss)]
-fn compensate_temperature(ut: i32, cal: &Calibration) -> (i32, f32) {
-    let x1 = ((ut - i32::from(cal.ac6)) * i32::from(cal.ac5)) >> 15;
-    let x2 = (i32::from(cal.mc) * 2048) / (x1 + i32::from(cal.md));
+fn compensate_temperature(ut: i64, cal: &Calibration) -> Option<(i64, f32)> {
+    let x1 = ((ut - i64::from(cal.ac6)) * i64::from(cal.ac5)) >> 15;
+    let x2 = (i64::from(cal.mc) * 2048).checked_div(x1 + i64::from(cal.md))?;
     let b5 = x1 + x2;
-    (b5, ((b5 + 8) >> 4) as f32 / 10.0)
+    Some((b5, ((b5 + 8) >> 4) as f32 / 10.0))
 }
 
-// BMP180 datasheet §4.1.2 pressure compensation algorithm. The mixed-sign integer
-// arithmetic and final i32→f32 cast are specified by the datasheet; deviating would
-// produce wrong results. Truncation and wrap-around are part of the fixed-point math.
-#[allow(
-    clippy::cast_sign_loss,
-    clippy::cast_possible_truncation,
-    clippy::cast_precision_loss,
-    clippy::cast_possible_wrap
-)]
-fn compensate_pressure(up: i32, b5: i32, oss: u8, cal: &Calibration) -> f32 {
+// Returns the pressure in hPa, or `None` where the datasheet algorithm has no
+// result: a zero divisor, or a `p` outside the `long` its final correction assumes.
+#[allow(clippy::cast_precision_loss)]
+fn compensate_pressure(up: i64, b5: i64, oss: u8, cal: &Calibration) -> Option<f32> {
     let b6 = b5 - 4000;
-    let x1 = (i32::from(cal.b2) * ((b6 * b6) >> 12)) >> 11;
-    let x2 = (i32::from(cal.ac2) * b6) >> 11;
+    let x1 = (i64::from(cal.b2) * ((b6 * b6) >> 12)) >> 11;
+    let x2 = (i64::from(cal.ac2) * b6) >> 11;
     let x3 = x1 + x2;
-    let b3 = (((i32::from(cal.ac1) * 4 + x3) << oss) + 2) >> 2;
-    let x1 = (i32::from(cal.ac3) * b6) >> 13;
-    let x2 = (i32::from(cal.b1) * ((b6 * b6) >> 12)) >> 16;
+    let b3 = (((i64::from(cal.ac1) * 4 + x3) << oss) + 2) >> 2;
+    let x1 = (i64::from(cal.ac3) * b6) >> 13;
+    let x2 = (i64::from(cal.b1) * ((b6 * b6) >> 12)) >> 16;
     let x3 = (x1 + x2 + 2) >> 2;
-    let b4 = (u32::from(cal.ac4) * (x3 + 32768).cast_unsigned()) >> 15;
-    let b7 = up.cast_unsigned().wrapping_sub(b3.cast_unsigned()) * (50000 >> oss);
+    let b4 = (i64::from(cal.ac4) * (x3 + 32768)) >> 15;
+    let b7 = (up - b3) * (50000 >> oss);
     let p = if b7 < 0x8000_0000 {
-        (b7 * 2) / b4
+        (b7 * 2).checked_div(b4)?
     } else {
-        (b7 / b4) * 2
-    } as i32;
+        b7.checked_div(b4)? * 2
+    };
+    let p = i64::from(i32::try_from(p).ok()?);
     let x1 = (p >> 8) * (p >> 8);
     let x1 = (x1 * 3038) >> 16;
     let x2 = (-7357 * p) >> 16;
-    (p + ((x1 + x2 + 3791) >> 4)) as f32 / 100.0 // Pa → hPa
+    Some((p + ((x1 + x2 + 3791) >> 4)) as f32 / 100.0) // Pa → hPa
 }
 
 #[cfg(test)]
@@ -501,6 +524,100 @@ mod tests {
                     "UP={up:#06X}: P={} vs reference {p}",
                     r.pressure
                 );
+            }
+            mock.done();
+        });
+    }
+
+    #[test]
+    fn init_rejects_a_zero_calibration_word() {
+        futures::executor::block_on(async {
+            let mut cal = cal_bytes();
+            cal[6..8].copy_from_slice(&0u16.to_be_bytes()); // AC4
+            let mut mock = Mock::new(&[
+                T::write_read(ADDR, vec![REG_CHIP_ID], vec![CHIP_ID]),
+                T::write_read(ADDR, vec![REG_CALIB], cal),
+            ]);
+            let mut driver = Bmp180::new(&Bmp180Config::default());
+            let result = driver.init(&mut mock).await;
+            assert!(matches!(result, Err(Bmp180Error::InvalidCalibration)));
+            mock.done();
+        });
+    }
+
+    #[test]
+    fn init_rejects_an_all_ones_calibration_word() {
+        futures::executor::block_on(async {
+            let mut cal = cal_bytes();
+            cal[20..22].copy_from_slice(&0xFFFFu16.to_be_bytes()); // MD
+            let mut mock = Mock::new(&[
+                T::write_read(ADDR, vec![REG_CHIP_ID], vec![CHIP_ID]),
+                T::write_read(ADDR, vec![REG_CALIB], cal),
+            ]);
+            let mut driver = Bmp180::new(&Bmp180Config::default());
+            let result = driver.init(&mut mock).await;
+            assert!(matches!(result, Err(Bmp180Error::InvalidCalibration)));
+            mock.done();
+        });
+    }
+
+    #[test]
+    fn sample_has_no_result_at_the_temperature_pole() {
+        // X1 + MD = 0 for the datasheet calibration at UT = 0x4F3D, far below -40 °C.
+        futures::executor::block_on(async {
+            let mut txns = vec![
+                T::write_read(ADDR, vec![REG_CHIP_ID], vec![CHIP_ID]),
+                T::write_read(ADDR, vec![REG_CALIB], cal_bytes()),
+            ];
+            txns.extend(sample_txns(0x4F3D, 0x7C36));
+            let mut mock = Mock::new(&txns);
+            let mut driver = Bmp180::new(&Bmp180Config::default());
+            driver.init(&mut mock).await.unwrap();
+            let result = driver.sample(&mut mock).await;
+            assert!(matches!(result, Err(Bmp180Error::UndefinedCompensation)));
+            mock.done();
+        });
+    }
+
+    #[test]
+    fn sample_has_no_result_when_b4_is_zero() {
+        // AC4 = 1 passes the word check but makes B4 vanish at the top of the range.
+        futures::executor::block_on(async {
+            let mut cal = cal_bytes();
+            cal[6..8].copy_from_slice(&1u16.to_be_bytes());
+            let mut txns = vec![
+                T::write_read(ADDR, vec![REG_CHIP_ID], vec![CHIP_ID]),
+                T::write_read(ADDR, vec![REG_CALIB], cal),
+            ];
+            txns.extend(sample_txns(0x938A, 0x745E));
+            let mut mock = Mock::new(&txns);
+            let mut driver = Bmp180::new(&Bmp180Config::default());
+            driver.init(&mut mock).await.unwrap();
+            let result = driver.sample(&mut mock).await;
+            assert!(matches!(result, Err(Bmp180Error::UndefinedCompensation)));
+            mock.done();
+        });
+    }
+
+    #[test]
+    fn extreme_register_contents_do_not_panic() {
+        // Values no healthy chip produces: all-ones UT with all-zero UP, and the
+        // UT band just above the temperature pole.
+        const POINTS: [(u16, u16); 2] = [(0xFFFF, 0x0000), (0x4DB0, 0x7C36)];
+        futures::executor::block_on(async {
+            let mut txns = vec![
+                T::write_read(ADDR, vec![REG_CHIP_ID], vec![CHIP_ID]),
+                T::write_read(ADDR, vec![REG_CALIB], cal_bytes()),
+            ];
+            for (ut, up) in POINTS {
+                txns.extend(sample_txns(ut, up));
+            }
+            let mut mock = Mock::new(&txns);
+            let mut driver = Bmp180::new(&Bmp180Config::default());
+            driver.init(&mut mock).await.unwrap();
+            for (ut, up) in POINTS {
+                let result = driver.sample(&mut mock).await;
+                assert!(result.is_ok(), "UT={ut:#06X} UP={up:#06X}: {result:?}");
             }
             mock.done();
         });
