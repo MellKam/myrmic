@@ -167,6 +167,7 @@ default-members = [
     # Cell fixtures. `cargo test` builds each lib as a test binary against std,
     # so they belong in a default build even though most of them are compiled
     # for wasm32 in anger.
+    "tests/fixtures/cell-ble-sensor-client",
     "tests/fixtures/cell-blinky-periodic-logic",
     "tests/fixtures/cell-counter-caller-logic",
     "tests/fixtures/cell-event-sub-logic",
