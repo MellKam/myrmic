@@ -449,7 +449,7 @@ wasmtime = "49.0.2"
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
-rustls = { version = "0.23", default-features = false }
+rustls = { version = "0.23.46", default-features = false }
 rumqttc = { git = "https://github.com/peeriot/rumqtt.git", rev = "19fdf07", default-features = false, features = [
     "use-rustls-no-provider",
 ] }
