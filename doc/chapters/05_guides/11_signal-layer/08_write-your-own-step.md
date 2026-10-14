@@ -1,11 +1,12 @@
 # Write your own step
 
 A step is a small Rust crate: a directory holding `Cargo.toml`, `src/lib.rs`, and a
-`descriptor.yaml`. `myrmic new my-step --step` scaffolds all three, already compiling with a stubbed
-test suite. You can author it in the repository, under `signal-modules/steps/` next to the shipped
-ones, or, as [Authoring out of the tree](#authoring-out-of-the-tree) below shows, in a directory of
-your own. Start its `src/lib.rs` with `#![cfg_attr(not(test), no_std)]`: every shipped step has it,
-and without it your crate builds on your laptop and fails when someone compiles it for a board.
+`descriptor.yaml`. `myrmic signal-layer step my-step` scaffolds all three, already compiling with
+a stubbed test suite. You can author it in the repository, under `signal-modules/steps/` next to
+the shipped ones, or, as [Authoring out of the tree](#authoring-out-of-the-tree) below shows, in a
+directory of your own. Start its `src/lib.rs` with `#![cfg_attr(not(test), no_std)]`: every
+shipped step has it, and without it your crate builds on your laptop and fails when someone
+compiles it for a board.
 
 A step is a transform. It takes a value on its way through the pipeline, does something to it,
 and passes on the result: smoothing a noisy reading, converting a unit, turning a temperature
@@ -169,7 +170,7 @@ flexible costs you the type check that would have caught a mis-wired pipeline.
 
 ## Authoring out of the tree
 
-You do not have to work inside the Myrmic checkout. `myrmic new my-step --step --registry-dir ~/sl-modules`
+You do not have to work inside the Myrmic checkout. `myrmic signal-layer step my-step --registry-dir ~/sl-modules`
 scaffolds the crate under `~/sl-modules/steps/my-step`, and a pipeline builds against it by naming that
 registry directory in its `build.rs`: `build_pipeline("board.yml", "pipeline.yml", Some("../sl-modules"))`
 for a Linux pipeline, or `.include("../sl-modules")` for a firmware one, together with an ordinary path

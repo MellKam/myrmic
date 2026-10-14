@@ -5,8 +5,8 @@ how to ask it for a reading, or how to make it act. Everything else in the Signa
 generic, so supporting a new sensor or a new actuator means writing a driver and nothing more.
 
 A driver is a small Rust crate: a directory holding `Cargo.toml`, `src/lib.rs` with the logic, and
-a `descriptor.yaml` telling the generator what it needs and what it produces. `myrmic new my-sensor
---driver=i2c` (or `--driver=spi`) scaffolds all three, already compiling with a stubbed test suite,
+a `descriptor.yaml` telling the generator what it needs and what it produces. `myrmic signal-layer
+driver my-sensor --bus i2c` (or `--bus spi`) scaffolds all three, already compiling with a stubbed test suite,
 so you fill in only what is specific to your device; the shipped drivers under
 `signal-modules/drivers/` are working examples of everything this page describes. You can author a
 driver inside the repository or, as [Authoring out of the tree](#authoring-out-of-the-tree) below
@@ -327,7 +327,7 @@ for the bench; whether your maths is right is a question you can answer at your 
 
 ## Authoring out of the tree
 
-You do not have to work inside the Myrmic checkout. `myrmic new my-sensor --driver=i2c --registry-dir ~/sl-modules`
+You do not have to work inside the Myrmic checkout. `myrmic signal-layer driver my-sensor --bus i2c --registry-dir ~/sl-modules`
 scaffolds the crate under `~/sl-modules/drivers/my-sensor`, and a pipeline builds against it by naming
 that registry directory. In a Linux pipeline's `build.rs` that is the third argument,
 `build_pipeline("board.yml", "pipeline.yml", Some("../sl-modules"))`; on a firmware pipeline it is

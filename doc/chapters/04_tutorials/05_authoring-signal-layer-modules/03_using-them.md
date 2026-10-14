@@ -10,7 +10,7 @@ Create the pipeline next to `~/sl-modules`, so a short relative path reaches it:
 
 ```bash
 cd ~
-myrmic new tut-pipeline --pipeline
+myrmic signal-layer new tut-pipeline
 ```
 
 That is the standalone Linux pipeline from [First Steps](../04_first-steps-signal-layer.md): a

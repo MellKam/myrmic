@@ -6,11 +6,11 @@ part writes one for an I2C temperature sensor.
 
 ## Scaffold it
 
-A driver is tied to a bus, and you name it explicitly: `--driver=i2c` or `--driver=spi`. There is
-no default, because the two are different code.
+A driver is tied to a bus, and you name it explicitly: `--bus i2c` or `--bus spi`. There is no
+default, because the two are different code.
 
 ```bash
-myrmic new thermo --driver=i2c --registry-dir ~/sl-modules
+myrmic signal-layer driver thermo --bus i2c --registry-dir ~/sl-modules
 ```
 
 This lands `thermo` next to the deadband step, under `drivers/` this time:
@@ -208,6 +208,6 @@ matching field.
 cargo test
 ```
 
-An SPI sensor is the same shape with `--driver=spi`: the driver is generic over the `SpiDevice`
+An SPI sensor is the same shape with `--bus spi`: the driver is generic over the `SpiDevice`
 trait instead, and the descriptor declares `transport: spi`. [Next](03_using-them.md), you point a
 pipeline at your registry and run both modules.
