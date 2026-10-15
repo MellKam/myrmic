@@ -105,7 +105,7 @@ pub fn build_app(
 
         match ty {
             PathType::Toml => {
-                if let Some(chip) = firmware::chip_of(&path)? {
+                if let Some(chip) = firmware::chip_of(&path, &cargo_target)? {
                     anyhow::bail!(
                         "class `{id}` points at a {chip} firmware crate, not a cell; build it on \
                          its own with `myrmic build {}`",
@@ -280,7 +280,7 @@ fn build_member(
     runtime_name: Option<&str>,
     features: &firmware::Features,
 ) -> anyhow::Result<Option<CellClass>> {
-    if let Some(chip) = firmware::chip_of(path)? {
+    if let Some(chip) = firmware::chip_of(path, cargo_target)? {
         build_firmware(
             ctx,
             path,
@@ -291,7 +291,7 @@ fn build_member(
             features,
         )?;
         Ok(None)
-    } else if linux_pipeline::is_linux_pipeline(path)? {
+    } else if linux_pipeline::is_linux_pipeline(path, cargo_target)? {
         build_linux_pipeline(ctx, path, platforms, cargo_target, runtime_name, features)?;
         Ok(None)
     } else {

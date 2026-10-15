@@ -80,10 +80,14 @@ struct Metadata {
     firmware: Option<Chip>,
 }
 
-/// The chip named by `[package.metadata.myrmic] firmware`, or `None` for a
-/// cell crate (or a manifest with no `[package]` at all).
-pub fn chip_of(manifest_path: &Path) -> anyhow::Result<Option<Chip>> {
-    Ok(cargo::read_package_metadata::<Metadata>(manifest_path)?.and_then(|m| m.firmware))
+/// The chip named by `[package.metadata.myrmic] firmware` for the target
+/// `cargo_target` selects, or `None` for a cell (or a manifest with no
+/// `[package]` at all).
+pub fn chip_of(manifest_path: &Path, cargo_target: &CargoTarget) -> anyhow::Result<Option<Chip>> {
+    Ok(
+        cargo::read_package_metadata::<Metadata>(manifest_path, cargo_target)?
+            .and_then(|m| m.firmware),
+    )
 }
 
 /// What a firmware build produced.
@@ -264,21 +268,24 @@ mod tests {
     #[test]
     fn chip_of_reads_the_firmware_chip_from_myrmic_metadata() {
         let (_dir, path) = manifest_with("[package.metadata.myrmic]\nfirmware = \"esp32c6\"\n");
-        assert_eq!(chip_of(&path).unwrap(), Some(Chip::Esp32c6));
+        assert_eq!(
+            chip_of(&path, &CargoTarget::Auto).unwrap(),
+            Some(Chip::Esp32c6)
+        );
     }
 
     #[test]
     fn chip_of_is_none_for_a_cell_crate() {
         let (_dir, path) = manifest_with("[package.metadata.myrmic]\nheap_size = 2048\n");
-        assert_eq!(chip_of(&path).unwrap(), None);
+        assert_eq!(chip_of(&path, &CargoTarget::Auto).unwrap(), None);
         let (_dir, path) = manifest_with("");
-        assert_eq!(chip_of(&path).unwrap(), None);
+        assert_eq!(chip_of(&path, &CargoTarget::Auto).unwrap(), None);
     }
 
     #[test]
     fn chip_of_rejects_an_unknown_chip() {
         let (_dir, path) = manifest_with("[package.metadata.myrmic]\nfirmware = \"esp32\"\n");
-        let err = format!("{:#}", chip_of(&path).unwrap_err());
+        let err = format!("{:#}", chip_of(&path, &CargoTarget::Auto).unwrap_err());
         assert!(err.contains("esp32"), "{err}");
     }
 
