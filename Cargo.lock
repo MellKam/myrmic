@@ -6861,7 +6861,6 @@ dependencies = [
  "espflash",
  "libc",
  "miette",
- "myrmic-build",
  "serialport",
 ]
 

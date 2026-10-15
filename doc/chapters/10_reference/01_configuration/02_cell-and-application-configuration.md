@@ -36,8 +36,10 @@ heap_size = 32_768
 heap_size = 65_536
 
 [package.metadata.myrmic.bin.sensor-node]
-firmware = "esp32c6"
+firmware = "esp32"
 ```
+
+A firmware crate sets `firmware = "esp32"` (aliases: `firmware-family`, `family`) instead of the memory keys. Its own cargo features pick the chip, and `myrmic flash` refuses an image built for a different chip than the attached board's. The chip names `esp32c5`, `esp32c6` and `esp32c61` are still accepted, but are deprecated.
 
 > **Note:** For workspaces there is no way to configure memory at the workspace level - only through the `Cargo.toml` of each member Cell.
 

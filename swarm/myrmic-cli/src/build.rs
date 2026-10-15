@@ -105,10 +105,10 @@ pub fn build_app(
 
         match ty {
             PathType::Toml => {
-                if let Some(chip) = firmware::chip_of(&path, &cargo_target)? {
+                if firmware::firmware_of(&path, &cargo_target)?.is_some() {
                     anyhow::bail!(
-                        "class `{id}` points at a {chip} firmware crate, not a cell; build it on \
-                         its own with `myrmic build {}`",
+                        "class `{id}` points at a firmware crate, not a cell; build it on its \
+                         own with `myrmic build {}`",
                         og_path.display()
                     );
                 }
@@ -280,16 +280,8 @@ fn build_member(
     runtime_name: Option<&str>,
     features: &firmware::Features,
 ) -> anyhow::Result<Option<CellClass>> {
-    if let Some(chip) = firmware::chip_of(path, cargo_target)? {
-        build_firmware(
-            ctx,
-            path,
-            chip,
-            platforms,
-            cargo_target,
-            runtime_name,
-            features,
-        )?;
+    if firmware_of(ctx, path, cargo_target)?.is_some() {
+        build_firmware(ctx, path, platforms, cargo_target, runtime_name, features)?;
         Ok(None)
     } else if linux_pipeline::is_linux_pipeline(path, cargo_target)? {
         build_linux_pipeline(ctx, path, platforms, cargo_target, runtime_name, features)?;
@@ -308,10 +300,28 @@ fn build_member(
     }
 }
 
+/// The family `[package.metadata.myrmic] firmware` names, warning when it is
+/// spelled as a single chip.
+pub(crate) fn firmware_of(
+    ctx: &Ctx,
+    manifest_path: &Path,
+    cargo_target: &myrmic_build::CargoTarget,
+) -> anyhow::Result<Option<firmware::Firmware>> {
+    let firmware = firmware::firmware_of(manifest_path, cargo_target)?;
+    if let Some(chip) = firmware.and_then(firmware::Firmware::deprecated_chip) {
+        crate::warn!(
+            ctx,
+            "`firmware = \"{chip}\"` is deprecated and may be removed; change it to \
+             `firmware = \"esp32\"` in {} (its cargo features pick the chip)",
+            manifest_path.display()
+        );
+    }
+    Ok(firmware)
+}
+
 fn build_firmware(
     ctx: &Ctx,
     path: &Path,
-    chip: firmware::Chip,
     platforms: &[PlatformFamily],
     cargo_target: &myrmic_build::CargoTarget,
     runtime_name: Option<&str>,
@@ -320,11 +330,10 @@ fn build_firmware(
     if platforms != PlatformFamily::DEFAULT {
         crate::warn!(
             ctx,
-            "--platform is ignored for a firmware crate; the chip ({chip}) comes from \
-             `[package.metadata.myrmic] firmware`"
+            "--platform is ignored for a firmware crate; its cargo features pick the chip"
         );
     }
-    report_building(ctx, chip, path, runtime_name);
+    report_building(ctx, path, runtime_name);
 
     let built = firmware::build(path, cargo_target, None, runtime_name, features)?;
     report_layout(ctx, &built);
@@ -382,19 +391,14 @@ fn build_linux_pipeline(
 
 /// Announces a firmware build, naming the runtime it is built for when one was
 /// given.
-pub(crate) fn report_building(
-    ctx: &Ctx,
-    chip: firmware::Chip,
-    manifest_path: &Path,
-    runtime_name: Option<&str>,
-) {
+pub(crate) fn report_building(ctx: &Ctx, manifest_path: &Path, runtime_name: Option<&str>) {
     match runtime_name {
         Some(name) => crate::info!(
             ctx,
-            "Building {chip} firmware for runtime `{name}`: {}",
+            "Building firmware for runtime `{name}`: {}",
             manifest_path.display()
         ),
-        None => crate::info!(ctx, "Building {chip} firmware: {}", manifest_path.display()),
+        None => crate::info!(ctx, "Building firmware: {}", manifest_path.display()),
     }
 }
 
