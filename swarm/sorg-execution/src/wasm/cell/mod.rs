@@ -193,16 +193,6 @@ pub(crate) async fn run_cell(
     Ok((poison_snd, handle))
 }
 
-/// Whether this incarnation still owes its `#[init]`: no registry row, or a
-/// corpse row from an older incarnation whose erase hasn't replicated here
-/// yet (the init tx's entry write supersedes it — restarts mint strictly
-/// greater generations). A row at or past this deploy's generation is
-/// authoritative: same gen means init already ran, newer means this body was
-/// superseded mid-load and must not clobber its successor's row.
-fn init_pending(existing: Option<Gen>, gen_id: Gen) -> bool {
-    existing.is_none_or(|g| g < gen_id)
-}
-
 #[allow(clippy::too_many_arguments)]
 async fn call_cell_inits(
     instance: &Instance,
@@ -222,7 +212,7 @@ async fn call_cell_inits(
     let existing = sorg_common::instance_registry::get_instance(session, sri)
         .await?
         .map(|record| record.gen_id);
-    if !init_pending(existing, gen_id) {
+    if !cell_protocol::supervision::init_pending(existing, gen_id) {
         return Ok(());
     }
 
@@ -332,33 +322,4 @@ pub(crate) async fn event_handlers_from_cell_binary(
     }
 
     Ok(event_handlers)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn g(time: u64) -> Gen {
-        Gen::from_parts(time, 1)
-    }
-
-    #[test]
-    fn init_runs_for_an_unregistered_sri() {
-        assert!(init_pending(None, g(2)));
-    }
-
-    #[test]
-    fn stale_corpse_row_does_not_suppress_init() {
-        assert!(init_pending(Some(g(1)), g(2)));
-    }
-
-    #[test]
-    fn own_registration_skips_init() {
-        assert!(!init_pending(Some(g(2)), g(2)));
-    }
-
-    #[test]
-    fn newer_incarnations_row_is_left_alone() {
-        assert!(!init_pending(Some(g(3)), g(2)));
-    }
 }

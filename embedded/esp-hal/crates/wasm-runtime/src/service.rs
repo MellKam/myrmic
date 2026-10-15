@@ -21,6 +21,7 @@ use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_sync::channel::Receiver;
 use embassy_sync::signal::Signal;
 use esp_radio_rtos_driver::queue::QueueHandle;
+use portable_atomic::Ordering;
 use portable_atomic_util::Arc;
 use static_cell::StaticCell;
 use wasm_storage::WasmStorage;
@@ -30,7 +31,7 @@ use wasm_storage::metadata::Metadata;
 use crate::async_request::Ble;
 use crate::async_request::cell_host::CellHost;
 use crate::async_request::{CELL_MSG_CHANNEL, DbClient, send_request_and_wait};
-use crate::{CellMessage, TimerCompletionGuard, WamrRuntime, is_terminated};
+use crate::{CellMessage, IDLE, TimerCompletionGuard, WamrRuntime, is_terminated};
 
 /// Moves a value across an `esp_radio_rtos_driver` thread spawn, through the
 /// entry point's `*mut c_void` argument. The `Send` bound restores the check
@@ -357,6 +358,7 @@ pub async fn runtime_handler(
         let payload;
         let gen_id;
         let lineage;
+        IDLE.store(true, Ordering::Release);
         let new_metadata = loop {
             if let WasmTransfer::Start {
                 metadata: new_metadata,
@@ -368,6 +370,7 @@ pub async fn runtime_handler(
                 reply,
             } = wasm_file_transfer.receive().await
             {
+                IDLE.store(false, Ordering::Release);
                 sri = new_sri;
                 class_name = new_class_name;
                 payload = new_payload;
@@ -509,8 +512,7 @@ extern "C" fn wamr_runtime(wamr_context_box: *mut c_void) {
         ) {
             Ok(runtime) => runtime,
             Err(e) => {
-                log::error!("[WAMR] Runtime initialization failed: {e}");
-                // `#[init]` may have created timers before failing.
+                log::error!("[WAMR] Runtime initialization failed: {e}"); // `#[init]` may have created timers before failing.
                 ctx.discard_cell_leftovers();
                 send_request_and_wait(DbClient::ConfirmDeployment {
                     sri,

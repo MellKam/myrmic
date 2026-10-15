@@ -104,6 +104,9 @@ const AOT_MAGIC: u32 = 0x746f_6100;
 /// Holds whether the WASM module should be terminated
 static TERMINATE: AtomicBool = AtomicBool::new(false);
 
+/// Holds whether the runtime handler is waiting for a module, with no cell loaded
+static IDLE: AtomicBool = AtomicBool::new(false);
+
 /// Runtime Errors
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -147,6 +150,11 @@ pub fn terminate_module() {
 /// Returns whether the runtime has been terminated
 pub fn is_terminated() -> bool {
     TERMINATE.load(Ordering::Acquire)
+}
+
+/// Returns whether the runtime is ready to take a module: no cell is loaded or being torn down
+pub fn is_idle() -> bool {
+    IDLE.load(Ordering::Acquire)
 }
 
 /// A WAMR runtime that uses a WASM module to support the Cell Architecture.
@@ -256,7 +264,7 @@ impl<'buf> WamrRuntime<'buf> {
 
         // Ahead of the application, and in a transaction of its own: this reads
         // `sorg`, which the deploy's application is not routed to.
-        let already_registered = is_sri_already_registered(sri)?;
+        let init_pending = cell_protocol::supervision::init_pending(registered_gen(sri)?, gen_id);
 
         // One application spans the whole of init: whatever init writes, and
         // the instance row itself. An admitted deploy is a new life, and
@@ -275,7 +283,7 @@ impl<'buf> WamrRuntime<'buf> {
                 lineage,
             },
             payload,
-            already_registered,
+            init_pending,
         );
 
         if let Err(err) = init_result {
@@ -575,14 +583,14 @@ fn rollback_application() {
     send_request_and_wait(DbClient::Rollback);
 }
 
-/// Checks if this SRI has already a registry entry.
+/// The generation on this SRI's registry entry, if it has one.
 ///
 /// Read in a transaction of its own, routed to the registry's own scope, and so
 /// answered by the highest-head holder of `sorg`. Reading it through the
 /// deploy's application would place it on a holder of the *cell's* scope —
 /// possibly a fallback-minted sink whose `sorg` replica is behind — and a stale
 /// "not registered" re-runs `init_cell` on a cell whose init has already run.
-fn is_sri_already_registered(sri: &Sri) -> Result<bool, Error> {
+fn registered_gen(sri: &Sri) -> Result<Option<Gen>, Error> {
     let tb_get::Response { value } = send_request_and_wait(DbClient::ReadIn {
         scope: instance_registry_scope(),
         op: tb_get::Op {
@@ -596,7 +604,13 @@ fn is_sri_already_registered(sri: &Sri) -> Result<bool, Error> {
     .try_into()
     .map_err(|_| Error::CellRegistration("unexpected registry response".to_owned()))?;
 
-    Ok(value.is_some())
+    value
+        .map(|bytes| {
+            postcard::from_bytes::<CellInstance>(&bytes)
+                .map(|instance| instance.gen_id)
+                .map_err(|err| Error::CellRegistration(format!("bad registry entry: {err}")))
+        })
+        .transpose()
 }
 
 /// Removes the mailbox message that delivered a command, so its consumption
@@ -628,9 +642,9 @@ struct InitTarget<'a> {
     lineage: &'a SpawnLineage,
 }
 
-/// Calls the cell's `init_cell` export — skipped for an SRI that already has a
-/// registry row, since its init has run before — and writes the instance row.
-/// Both join the deploy's application.
+/// Calls the cell's `init_cell` export and writes the instance row, both
+/// joining the deploy's application. Neither happens unless `init_pending`
+/// (see [`cell_protocol::supervision::init_pending`]).
 #[expect(
     clippy::expect_used,
     reason = "cell arguments are far smaller than i32::MAX"
@@ -639,7 +653,7 @@ fn run_cell_init(
     instance: &Instance<'static>,
     target: InitTarget<'_>,
     payload: Option<Vec<u8>>,
-    already_registered: bool,
+    init_pending: bool,
 ) -> Result<(), Error> {
     let InitTarget {
         sri,
@@ -648,7 +662,7 @@ fn run_cell_init(
         lineage,
     } = target;
 
-    if !already_registered {
+    if init_pending {
         // `init_cell` matches the myrmic-sdk `#[init]` ABI `(id_hi, id_lo, sender_hi, sender_lo)`
         let (id_hi, id_lo) = sri.as_parts();
         let (sender_hi, sender_lo) = lineage.parent.unwrap_or(Sri::NIL).as_parts();
@@ -672,9 +686,11 @@ fn run_cell_init(
                 ),
             ],
         )?;
+
+        register_sri(sri, class_name, gen_id, lineage)?;
     }
 
-    register_sri(sri, class_name, gen_id, lineage)
+    Ok(())
 }
 
 /// Registers the instance in the instance registry: one *life* of an SRI,
