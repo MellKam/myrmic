@@ -25,6 +25,22 @@ initial_memory = 131_072
 max_memory = 262_144
 ```
 
+A crate with several cargo targets can give each target its own settings. Keys in `[package.metadata.myrmic.lib]` apply to the library, and keys in `[package.metadata.myrmic.bin.<name>]` apply to that binary; either overrides the package-level value of the same key. A table for a binary the crate doesn't declare is an error.
+
+**Example:**
+```toml
+[package.metadata.myrmic]
+heap_size = 32_768
+
+[package.metadata.myrmic.lib]
+heap_size = 65_536
+
+[package.metadata.myrmic.bin.sensor-node]
+firmware = "esp32"
+```
+
+A firmware crate sets `firmware = "esp32"` (aliases: `firmware-family`, `family`) instead of the memory keys. Its own cargo features pick the chip, and `myrmic flash` refuses an image built for a different chip than the attached board's. The chip names `esp32c5`, `esp32c6` and `esp32c61` are still accepted, but are deprecated.
+
 > **Note:** For workspaces there is no way to configure memory at the workspace level - only through the `Cargo.toml` of each member Cell.
 
 ## Application

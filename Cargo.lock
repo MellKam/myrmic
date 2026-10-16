@@ -3658,7 +3658,7 @@ dependencies = [
 [[package]]
 name = "esp-alloc"
 version = "0.10.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "allocator-api2 0.3.1",
  "document-features",
@@ -3673,7 +3673,7 @@ dependencies = [
 [[package]]
 name = "esp-backtrace"
 version = "0.19.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "esp-config",
@@ -3687,7 +3687,7 @@ dependencies = [
 [[package]]
 name = "esp-bootloader-esp-idf"
 version = "0.5.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "esp-config",
@@ -3739,7 +3739,7 @@ dependencies = [
 [[package]]
 name = "esp-config"
 version = "0.8.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "esp-metadata-generated 0.5.0",
@@ -3795,7 +3795,7 @@ dependencies = [
 [[package]]
 name = "esp-hal"
 version = "1.2.0-rc.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "bitfield",
  "bytemuck",
@@ -3853,7 +3853,7 @@ dependencies = [
 [[package]]
 name = "esp-hal-procmacros"
 version = "0.23.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "object 0.37.3",
@@ -3894,7 +3894,7 @@ dependencies = [
 [[package]]
 name = "esp-metadata-generated"
 version = "0.5.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 
 [[package]]
 name = "esp-metadata-generated"
@@ -3972,7 +3972,7 @@ dependencies = [
 [[package]]
 name = "esp-phy"
 version = "0.2.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "embassy-sync 0.8.0",
@@ -3992,7 +3992,7 @@ dependencies = [
 [[package]]
 name = "esp-println"
 version = "0.17.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "esp-metadata-generated 0.5.0",
@@ -4004,7 +4004,7 @@ dependencies = [
 [[package]]
 name = "esp-radio"
 version = "1.0.0-beta.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "allocator-api2 0.3.1",
  "bt-hci",
@@ -4051,7 +4051,7 @@ dependencies = [
 [[package]]
 name = "esp-radio-rtos-driver"
 version = "0.3.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "esp-sync",
  "portable-atomic",
@@ -4060,7 +4060,7 @@ dependencies = [
 [[package]]
 name = "esp-riscv-rt"
 version = "0.15.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "riscv",
@@ -4070,7 +4070,7 @@ dependencies = [
 [[package]]
 name = "esp-rom-sys"
 version = "0.1.5"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "esp-metadata-generated 0.5.0",
@@ -4082,7 +4082,7 @@ dependencies = [
 [[package]]
 name = "esp-rtos"
 version = "0.3.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "allocator-api2 0.3.1",
  "defmt 1.1.1",
@@ -4107,7 +4107,7 @@ dependencies = [
 [[package]]
 name = "esp-storage"
 version = "0.9.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "esp-hal",
@@ -4123,7 +4123,7 @@ dependencies = [
 [[package]]
 name = "esp-sync"
 version = "0.3.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "embassy-sync 0.6.2",
@@ -6861,7 +6861,6 @@ dependencies = [
  "espflash",
  "libc",
  "miette",
- "myrmic-build",
  "serialport",
 ]
 
@@ -13051,7 +13050,7 @@ dependencies = [
 [[package]]
 name = "xtensa-lx"
 version = "0.13.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "critical-section",
 ]
@@ -13059,7 +13058,7 @@ dependencies = [
 [[package]]
 name = "xtensa-lx-rt"
 version = "0.23.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "document-features",
  "xtensa-lx",
@@ -13069,7 +13068,7 @@ dependencies = [
 [[package]]
 name = "xtensa-lx-rt-proc-macros"
 version = "0.5.0"
-source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#8db8f5bb4f862479a5a595c3a095dff7785d19d0"
+source = "git+https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b3bfff7b73d76ba97db158ff280f01876"
 dependencies = [
  "proc-macro2",
  "quote",

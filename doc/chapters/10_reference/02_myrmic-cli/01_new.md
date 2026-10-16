@@ -16,7 +16,7 @@ version in use. What is scaffolded depends on `--firmware` and `--pipeline`:
 |---|---|
 | *(none)* | A **cell** crate — a `Cargo.toml`, a `.gitignore`, and a minimal counter cell in `src/lib.rs`. |
 | `--pipeline` | A **Linux Signal Layer pipeline** project — `board.yml` + `pipeline.yml`, and a `build.rs` that generates the pipeline from them. A standalone tokio binary you run with `cargo run`. |
-| `--firmware[=<chip>]` | An **ESP32 firmware** crate for the chip, with its `partitions.toml`. |
+| `--firmware[=<chip>]` | An **ESP32 firmware** crate with the chip as its default feature, and that chip's `partitions.toml`. |
 | `--firmware[=<chip>] --pipeline` | An **ESP32 firmware with a Signal Layer pipeline** — `board.yml` + `pipeline.yml` generated into the firmware image at build time. |
 
 Every pipeline scaffold starts with a headless `sim-source` device, so it builds and runs with no
@@ -26,7 +26,8 @@ hardware attached. Build and flash a firmware with [`myrmic build`](03_build.md)
 ## Options
 `-f`, `--firmware[=<CHIP>]`
 
-Scaffold a firmware crate instead of a cell. `<CHIP>` is one of `esp32c5`, `esp32c6`, `esp32c61`.
+Scaffold a firmware crate instead of a cell. `<CHIP>` is one of `esp32c5`, `esp32c6`, `esp32c61`, and
+becomes the crate's default chip feature; the manifest itself targets the whole family (`firmware = "esp32"`).
 The value requires the `=` form (`--firmware=esp32c6`); a bare `--firmware` defaults to `esp32c6`.
 
 `--pipeline`

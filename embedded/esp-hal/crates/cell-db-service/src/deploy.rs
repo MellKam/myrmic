@@ -1,5 +1,5 @@
 use alloc::borrow::ToOwned;
-use alloc::string::ToString;
+use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 use core::cmp::Ordering;
 
@@ -37,6 +37,49 @@ pub(crate) enum DeployError {
     DbUnreachable(zenoh_result::Error),
 }
 
+/// A deployment waiting for the cell it replaces to tear down, which needs the service loop free.
+pub(crate) struct PendingDeploy {
+    sri: Sri,
+    class: String,
+    payload: Option<Vec<u8>>,
+    gen_id: cell_protocol::Gen,
+    lineage: cell_protocol::SpawnLineage,
+}
+
+/// Resolves once the runtime can take a module; re-asserts the stop, as loading a cell clears it.
+pub(crate) async fn runtime_ready() {
+    while !wasm_runtime::is_idle() {
+        wasm_runtime::terminate_module();
+        Timer::after_millis(100).await;
+    }
+}
+
+/// Runs a parked deployment; the runtime must be idle (see [`runtime_ready`]).
+pub(crate) async fn run_pending(
+    client: &Client,
+    pending: PendingDeploy,
+    wasm_transfer: Sender<'static, CriticalSectionRawMutex, WasmTransfer, 1>,
+    watched: &mut Option<cell_protocol::supervision::WatchedCell>,
+) {
+    let PendingDeploy {
+        sri,
+        class,
+        payload,
+        gen_id,
+        lineage,
+    } = pending;
+
+    // The verification pass fences this cell from now on.
+    *watched = Some(cell_protocol::supervision::WatchedCell {
+        sri,
+        gen_id,
+        lineage: lineage.clone(),
+    });
+    if let Err(e) = deploy(client, sri, &class, payload, gen_id, lineage, wasm_transfer).await {
+        log::error!("[db-client] Failed to deploy; {e}");
+    }
+}
+
 /// Handle deployment
 #[allow(
     clippy::too_many_arguments,
@@ -46,11 +89,11 @@ pub(crate) async fn handle(
     client: &Client,
     zid: ZenohIdProto,
     last_deploy_id: &mut Option<Id>,
-    wasm_transfer: Sender<'static, CriticalSectionRawMutex, WasmTransfer, 1>,
     cell: Option<&(Sri, Vec<Command>)>,
     native_held: bool,
     awaiting_deletion_confirmation: &mut bool,
-    watched: &mut Option<cell_protocol::supervision::WatchedCell>,
+    watched: Option<&cell_protocol::supervision::WatchedCell>,
+    pending: &mut Option<PendingDeploy>,
 ) {
     if let Some(cmd) = poll_for_deployment(client, zid, last_deploy_id).await {
         match cmd {
@@ -90,24 +133,45 @@ pub(crate) async fn handle(
                 gen_id,
                 lineage,
             } => {
+                // Not newer than what we run: a timed-out attempt nobody awaits. A confirmation
+                // would be matched by SRI against the live deploy, so send none.
+                let newest = pending
+                    .as_ref()
+                    .map(|p| p.gen_id)
+                    .max(watched.map(|w| w.gen_id));
+                if let Some(newest) = newest
+                    && gen_id <= newest
+                {
+                    log::warn!("[db-client] ignoring stale deployment of '{sri}' ({gen_id:?})");
+                    return;
+                }
+
                 // If by now we redeployed, we don't need to send a confirmation since
                 // deployment by definition deletes the previous cell
                 *awaiting_deletion_confirmation = false;
 
-                // The verification pass fences this cell from now on.
-                *watched = Some(cell_protocol::supervision::WatchedCell {
+                wasm_runtime::terminate_module();
+                let superseded = pending.replace(PendingDeploy {
                     sri,
+                    class,
+                    payload,
                     gen_id,
-                    lineage: lineage.clone(),
+                    lineage,
                 });
-                if let Err(e) =
-                    deploy(client, sri, &class, payload, gen_id, lineage, wasm_transfer).await
-                {
-                    log::error!("[db-client] Failed to deploy; {e}");
+                if let Some(superseded) = superseded {
+                    log::warn!(
+                        "[db-client] deployment of '{}' superseded by '{sri}' before it ran",
+                        superseded.sri
+                    );
                 }
             }
             DeploymentCommand::Delete { sri: requested_sri } => {
-                if let Some((current_sri, _)) = cell {
+                // A deploy that never ran is deleted by dropping it.
+                let cancelled = pending.take_if(|p| p.sri == requested_sri).is_some();
+
+                if let Some((current_sri, _)) = cell
+                    && (current_sri == &requested_sri || !cancelled)
+                {
                     // We have a running cell
                     if current_sri == &requested_sri {
                         // SRI matches, we can terminate
@@ -122,7 +186,7 @@ pub(crate) async fn handle(
                         );
                     }
                 } else {
-                    // No cell is running, might as well confirm immediately
+                    // No cell is running, or its deploy never ran: confirm immediately
                     confirm_deployment(
                         client,
                         zid,
