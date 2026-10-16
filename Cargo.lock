@@ -3767,6 +3767,7 @@ dependencies = [
  "myrmic-common",
  "myrmic-signal-layer-types",
  "serde",
+ "serde_json",
  "signal-layer-core",
  "static_cell",
  "wasm-runtime",
