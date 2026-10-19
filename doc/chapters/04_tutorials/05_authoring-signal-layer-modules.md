@@ -5,7 +5,7 @@ it does not have: a sensor nobody has written a driver for, or a calculation no 
 This tutorial writes both, a step and a driver, and uses them in a pipeline without touching the
 Myrmic repository.
 
-`myrmic new` scaffolds each module as a small standalone crate, already compiling and with its
+`myrmic signal-layer` scaffolds each module as a small standalone crate, already compiling and with its
 tests passing, so the work is filling in the parts only you know: the arithmetic for a step, the
 register map for a driver.
 
@@ -27,15 +27,16 @@ into a shared module library. Nothing here changes your checkout.
 ## What you need
 
 - The `myrmic` CLI and the Rust toolchain, per [Installation](../01_quickstart/01_installation.md).
-- A clone of the Myrmic repository, so `myrmic new` can resolve the SDK. Clone it and point
-  `myrmic new` there once:
+- A clone of the Myrmic repository, so the scaffolds can resolve the SDK. Clone it and point
+  `myrmic signal-layer` there once:
 
   ```bash
   git clone https://github.com/peeriot/myrmic.git ~/myrmic
   export PEERIOT_MYRMIC_SDK=~/myrmic   # the path to your clone
   ```
 
-  Or pass `--sdk ~/myrmic` to every `myrmic new`. The flag wins if you set both.
+  Or pass `--sdk ~/myrmic` to `myrmic signal-layer step` and `myrmic signal-layer new`; a driver
+  crate depends on nothing from the SDK, so `driver` has no such flag. The flag wins if you set both.
 - A Linux machine. Everything here builds and runs with no attached hardware: the step is pure
   arithmetic, the driver is tested against a mock bus, and the pipeline reads the synthetic
   `sim-source`.

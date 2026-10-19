@@ -97,6 +97,11 @@ pub enum Command {
     ///
     /// Creates a fresh Rust crate wired up against peeriot's `myrmic_sdk`, ready to build.
     New(new::New),
+    /// Scaffold for the Signal Layer: a pipeline project, drivers and processing steps.
+    ///
+    /// `myrmic sl` is the short spelling.
+    #[clap(visible_alias = "sl")]
+    SignalLayer(signal_layer::SignalLayer),
     /// Build a cell, a firmware, or an application suite.
     ///
     /// Compiles the cell to the provided platform (default is `linux`)

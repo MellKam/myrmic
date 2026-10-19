@@ -6,11 +6,12 @@ write, so it is where we start.
 
 ## Scaffold it
 
-Pick a directory to keep your modules in; it does not have to exist yet. `myrmic new` creates it
-and places a step under `steps/<id>` inside it, which is the layout a pipeline will later read:
+Pick a directory to keep your modules in; it does not have to exist yet. The `step` command
+creates it and places a step under `steps/<id>` inside it, which is the layout a pipeline will
+later read:
 
 ```bash
-myrmic new deadband --step --registry-dir ~/sl-modules
+myrmic signal-layer step deadband --registry-dir ~/sl-modules
 ```
 
 ```text
