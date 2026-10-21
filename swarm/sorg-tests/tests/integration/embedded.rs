@@ -213,6 +213,7 @@ async fn assert_registered_with_embedded_tags(test_app: &TestApp, exec_id: Runti
 async fn write_deployment_command(db: &DbClient, exec_id: RuntimeId, sri: &Sri) {
     let command = DeploymentCommand::Deploy {
         class: cell_protocol::BlobHash::of(CELL_AOT),
+        aot: cell_protocol::BlobHash::of(CELL_AOT),
         crc: 0,
         sri: *sri,
         payload: None,

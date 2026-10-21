@@ -120,6 +120,7 @@ pub(crate) async fn handle(
             DeploymentCommand::Deploy {
                 sri,
                 class,
+                aot,
                 crc,
                 payload,
                 gen_id,
@@ -145,7 +146,7 @@ pub(crate) async fn handle(
                 wasm_runtime::terminate_module();
                 let superseded = pending.replace(PendingDeploy {
                     sri,
-                    module: Module { aot: class, crc },
+                    module: Module { class, aot, crc },
                     payload,
                     gen_id,
                     lineage,
@@ -191,10 +192,11 @@ pub(crate) async fn handle(
     }
 }
 
-/// The AOT module a deploy brings onto the device: its id, which is also the
-/// cell's class, and the CRC the flashed copy must match.
+/// The module a deploy brings onto the device: the cell's class, the id of the
+/// AOT binary that runs it here, and the CRC the flashed copy must match.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct Module {
+    class: BlobHash,
     aot: BlobHash,
     crc: u32,
 }
@@ -486,7 +488,7 @@ async fn start_transfer(
                 .send(WasmTransfer::Start {
                     metadata,
                     sri,
-                    class: module.aot,
+                    class: module.class,
                     payload: deployment_payload,
                     gen_id,
                     lineage,

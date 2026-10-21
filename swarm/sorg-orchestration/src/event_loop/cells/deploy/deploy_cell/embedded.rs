@@ -40,7 +40,8 @@ impl Runtime {
         // The firmware writes the instance row itself (before confirming),
         // so the command carries the full edge.
         let command = DeploymentCommand::Deploy {
-            class: aot,
+            class,
+            aot,
             crc,
             sri,
             payload,

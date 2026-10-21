@@ -56,8 +56,8 @@ fn deploy_request(cells: Vec<CellDeployment>) -> DeployRequest {
 }
 
 // Embedded mock present, esp32c6 AOT staged; deploy an embedded-tagged
-// cell → placed on the mock, a DeploymentCommand carrying the AOT binary's id
-// and CRC is delivered, success is confirmed, and the cell is registered on the
+// cell → placed on the mock, a DeploymentCommand carrying the class, the AOT
+// binary's id and CRC is delivered, success is confirmed, and the cell is registered on the
 // mock.
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn deploy_success() {
@@ -97,6 +97,7 @@ async fn deploy_success() {
     let DeploymentCommand::Deploy {
         sri: cmd_sri,
         class: cmd_class,
+        aot: cmd_aot,
         crc: cmd_crc,
         ..
     } = &received[0]
@@ -110,6 +111,10 @@ async fn deploy_success() {
     );
     assert_eq!(
         *cmd_class, class,
+        "deployment command should name the cell's class"
+    );
+    assert_eq!(
+        *cmd_aot, class,
         "deployment command should carry the AOT-only class's own binary"
     );
     assert_eq!(
@@ -117,6 +122,47 @@ async fn deploy_success() {
         wasm_storage::metadata::CRC.checksum(&[0xA0]),
         "deployment command should carry the AOT binary's CRC"
     );
+}
+
+// A wasm class with an AOT for the target: the command names the wasm class,
+// which the board records in the instance row, and the AOT it runs, which the
+// board fetches.
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+async fn deploy_of_a_wasm_class_names_the_class_and_its_aot() {
+    // Arrange — a wasm class with an AOT, and a mock embedded runtime
+    let swarm = swarm_config!("cells/embedded/swarm.jsonnet");
+    let test_app = spawn_test_app_with_swarm(swarm).await;
+    let mock = MockEmbeddedExec::spawn(Platform::Esp32c6, DeployResponseMode::ConfirmSuccess).await;
+    let class = test_app
+        .register_raw_class(CELL_CLASS, vec![0x00, 0x61, 0x73, 0x6D])
+        .await;
+    let aot = test_app
+        .register_raw_aot(CELL_CLASS, TARGET, vec![0xA0])
+        .await;
+    let sorg = sorg_client::Client::new(test_app.session().clone());
+
+    // Act
+    assert_ok!(
+        sorg.deploy_cells(deploy_request(vec![embedded_cell(CELL_SRI, class)]))
+            .await,
+        "embedded deploy should succeed when the runtime confirms"
+    );
+
+    // Assert
+    let received = mock.received_commands();
+    let DeploymentCommand::Deploy {
+        class: cmd_class,
+        aot: cmd_aot,
+        ..
+    } = &received[0]
+    else {
+        panic!("expected a Deploy command, got {:?}", received[0]);
+    };
+    assert_eq!(
+        *cmd_class, class,
+        "deployment command should name the wasm class"
+    );
+    assert_eq!(*cmd_aot, aot, "deployment command should carry its AOT");
 }
 
 // The runtime reports a failure (mock ConfirmFailure) → deploy fails

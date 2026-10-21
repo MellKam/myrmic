@@ -592,9 +592,12 @@ pub enum DeploymentCommand {
     /// Deploys the cell. If any existing running cell is present, it will be terminated before the
     /// new cell is deployed.
     Deploy {
-        /// Id of the AOT binary to run: the orchestrator resolves the cell's
-        /// class to the AOT for this runtime's platform.
+        /// Id of the cell's class, recorded in its instance row.
         class: BlobHash,
+        /// Id of the AOT binary to run: the orchestrator resolves the cell's
+        /// class to the AOT for this runtime's platform (the class itself for
+        /// an AOT-only class).
+        aot: BlobHash,
         /// The AOT binary's CRC-32 (ISO-HDLC), checked after flashing.
         crc: u32,
         /// SRI of the deployed cell
