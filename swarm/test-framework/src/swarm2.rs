@@ -4,7 +4,7 @@
 //! The name is temporary: this replaces [`crate::swarm`] and takes over its name once that is
 //! gone.
 
-use std::collections::{BTreeSet, HashMap};
+use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fmt::Debug;
 use std::hash::Hash;
 
@@ -110,31 +110,41 @@ where
     /// Returns once the swarm is connected: each runtime answers the test's status query and is
     /// linked to all the other runtimes, and no other runtime answers.
     pub async fn start(backend: B) -> Result<Self, Error> {
+        // Checked before anything starts: two runtimes under one name would race in the CLI.
         let ids = S::all();
-        let started = futures::future::join_all(ids.iter().map(|&id| {
-            let name = format!("{id:?}");
-            let myrmic = backend.shim(&name);
-            start_runtime(myrmic, name, id)
-        }))
-        .await;
-
-        let mut runtimes = HashMap::new();
-        for (id, runtime) in ids.into_iter().zip(started) {
-            let runtime = runtime?;
-            let swarm_runtime = Runtime {
-                name: runtime.name().to_owned(),
-                zid: runtime.zid(),
-                running: Some(runtime),
-            };
-            let previous = runtimes.insert(id, swarm_runtime);
-            assert!(previous.is_none(), "`all()` lists {id:?} twice");
-        }
-        let names: BTreeSet<&str> = runtimes.values().map(Runtime::name).collect();
+        let distinct_ids: HashSet<S> = ids.iter().copied().collect();
         assert_eq!(
-            names.len(),
-            runtimes.len(),
-            "two runtimes print the same name"
+            distinct_ids.len(),
+            ids.len(),
+            "`all()` lists a runtime twice: {ids:?}"
         );
+        let names: Vec<String> = ids.iter().map(|id| format!("{id:?}")).collect();
+        let distinct_names: BTreeSet<&str> = names.iter().map(String::as_str).collect();
+        assert_eq!(
+            distinct_names.len(),
+            names.len(),
+            "two runtimes print the same name: {names:?}"
+        );
+
+        let started = futures::future::join_all(
+            ids.iter()
+                .zip(names)
+                .map(|(&id, name)| start_runtime(backend.shim(&name), name, id)),
+        )
+        .await;
+        let runtimes = ids
+            .into_iter()
+            .zip(started)
+            .map(|(id, runtime)| {
+                let runtime = runtime?;
+                let swarm_runtime = Runtime {
+                    name: runtime.name().to_owned(),
+                    zid: runtime.zid(),
+                    running: Some(runtime),
+                };
+                Ok((id, swarm_runtime))
+            })
+            .collect::<Result<HashMap<_, _>, Error>>()?;
 
         let session = backend.connect_session().await;
         let swarm = Self {
