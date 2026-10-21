@@ -1,7 +1,7 @@
 use crate::args::Ctx;
 use crate::render::names_by_class;
 use anyhow::Context;
-use cell_protocol::BlobHash;
+use cell_protocol::{BlobHash, NATIVE_FIRMWARE_CLASS};
 
 /// Remove a class name, and the class once nothing references it; with
 /// `--ref-is-hash`, remove a class by its hash
@@ -27,6 +27,11 @@ pub async fn handle(ctx: Ctx, cmd: Delete) -> anyhow::Result<()> {
 
     let class = if ref_is_hash {
         let prefix = class_ref.to_lowercase();
+        anyhow::ensure!(
+            prefix != NATIVE_FIRMWARE_CLASS.to_hex(),
+            "'{class_ref}' is the class shown as <firmware>: native firmware cells run code built \
+             into the firmware, which is not a registered class and cannot be removed"
+        );
         let matches: Vec<BlobHash> = client
             .list_classes()
             .await
