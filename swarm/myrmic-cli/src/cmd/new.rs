@@ -15,8 +15,8 @@ pub struct New {
     #[clap(short, long)]
     name: Option<String>,
 
-    /// Scaffold a firmware crate for this chip (`esp32c5`, `esp32c6`, `esp32c61`)
-    /// instead of a cell.
+    /// Scaffold a firmware crate instead of a cell, with this chip (`esp32c5`,
+    /// `esp32c6`, `esp32c61`) as its default feature.
     #[clap(short, long, num_args = 0..=1, default_missing_value = "esp32c6")]
     firmware: Option<Chip>,
 

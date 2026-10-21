@@ -15,7 +15,7 @@ version in use. What is scaffolded depends on `--firmware`:
 | Flags | Scaffolds |
 |---|---|
 | *(none)* | A **cell** crate — a `Cargo.toml`, a `.gitignore`, and a minimal counter cell in `src/lib.rs`. |
-| `--firmware[=<chip>]` | An **ESP32 firmware** crate for the chip, with its `partitions.toml`. Build and flash it with [`myrmic build`](03_build.md) / `myrmic flash`. |
+| `--firmware[=<chip>]` | An **ESP32 firmware** crate with the chip as its default feature, and that chip's `partitions.toml`. Build and flash it with [`myrmic build`](03_build.md) / `myrmic flash`. |
 
 Signal Layer projects and modules are scaffolded by
 [`myrmic signal-layer`](16_signal-layer/01_new.md) instead.
@@ -23,7 +23,8 @@ Signal Layer projects and modules are scaffolded by
 ## Options
 `-f`, `--firmware[=<CHIP>]`
 
-Scaffold a firmware crate instead of a cell. `<CHIP>` is one of `esp32c5`, `esp32c6`, `esp32c61`.
+Scaffold a firmware crate instead of a cell. `<CHIP>` is one of `esp32c5`, `esp32c6`, `esp32c61`, and
+becomes the crate's default chip feature; the manifest itself targets the whole family (`firmware = "esp32"`).
 The value requires the `=` form (`--firmware=esp32c6`); a bare `--firmware` defaults to `esp32c6`.
 
 `--sdk <SDK>` (alias `--repo`)
