@@ -35,7 +35,7 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "ads1115-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-time",
  "embedded-hal-async",
@@ -884,7 +884,7 @@ dependencies = [
 
 [[package]]
 name = "bme280-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-time",
  "embedded-hal-async",
@@ -895,7 +895,7 @@ dependencies = [
 
 [[package]]
 name = "bmp180-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal-async",
  "embedded-hal-mock",
@@ -1080,7 +1080,7 @@ dependencies = [
 
 [[package]]
 name = "cadence"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "signal-layer-core",
 ]
@@ -1122,7 +1122,7 @@ dependencies = [
 
 [[package]]
 name = "ccs811-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-time",
  "embedded-hal 1.0.0",
@@ -1134,7 +1134,7 @@ dependencies = [
 
 [[package]]
 name = "cell-ble-sensor-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1142,7 +1142,7 @@ dependencies = [
 
 [[package]]
 name = "cell-blinky-periodic-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "myrmic-sdk",
@@ -1152,7 +1152,7 @@ dependencies = [
 
 [[package]]
 name = "cell-cb-receiver-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1160,7 +1160,7 @@ dependencies = [
 
 [[package]]
 name = "cell-cb-sender-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1168,7 +1168,7 @@ dependencies = [
 
 [[package]]
 name = "cell-counter-caller-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "postcard",
@@ -1177,7 +1177,7 @@ dependencies = [
 
 [[package]]
 name = "cell-counter-delay-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "postcard",
@@ -1185,7 +1185,7 @@ dependencies = [
 
 [[package]]
 name = "cell-counter-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1193,7 +1193,7 @@ dependencies = [
 
 [[package]]
 name = "cell-db-service"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-protocol",
  "cfg-match",
@@ -1217,7 +1217,7 @@ dependencies = [
 
 [[package]]
 name = "cell-docs-counter"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1225,7 +1225,7 @@ dependencies = [
 
 [[package]]
 name = "cell-event-pub-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1233,7 +1233,7 @@ dependencies = [
 
 [[package]]
 name = "cell-event-sub-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1241,14 +1241,14 @@ dependencies = [
 
 [[package]]
 name = "cell-failing-init-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-ff-receiver-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1256,7 +1256,7 @@ dependencies = [
 
 [[package]]
 name = "cell-ff-sender-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1264,14 +1264,14 @@ dependencies = [
 
 [[package]]
 name = "cell-gateway-mount-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-mailbox"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-protocol",
  "db-client",
@@ -1287,7 +1287,7 @@ dependencies = [
 
 [[package]]
 name = "cell-nested-caller-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1295,7 +1295,7 @@ dependencies = [
 
 [[package]]
 name = "cell-nested-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1303,28 +1303,28 @@ dependencies = [
 
 [[package]]
 name = "cell-no-init-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-periodic-fixed-delay-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-periodic-macro-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-protocol"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "db-commons",
  "myrmic-common",
@@ -1342,7 +1342,7 @@ dependencies = [
 
 [[package]]
 name = "cell-room-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "module-examples-common",
  "myrmic-sdk",
@@ -1350,14 +1350,14 @@ dependencies = [
 
 [[package]]
 name = "cell-runtime-tags-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-seq-helper-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1365,7 +1365,7 @@ dependencies = [
 
 [[package]]
 name = "cell-seq-main-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "serde",
@@ -1373,21 +1373,21 @@ dependencies = [
 
 [[package]]
 name = "cell-spawn-child"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-spawner"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-thermometer"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "myrmic-sdk-macros",
@@ -1396,7 +1396,7 @@ dependencies = [
 
 [[package]]
 name = "cell-thermostat-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "postcard",
@@ -1405,21 +1405,21 @@ dependencies = [
 
 [[package]]
 name = "cell-timer-cmd-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-timer-init-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "cell-wdt-selftest-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "postcard",
@@ -1428,7 +1428,7 @@ dependencies = [
 
 [[package]]
 name = "cell-wdt-spin-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "postcard",
@@ -2534,7 +2534,7 @@ dependencies = [
 
 [[package]]
 name = "db"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "criterion",
@@ -2570,7 +2570,7 @@ dependencies = [
 
 [[package]]
 name = "db-cli"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "argh",
  "db-client",
@@ -2584,7 +2584,7 @@ dependencies = [
 
 [[package]]
 name = "db-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "critical-section",
  "db-commons",
@@ -2609,7 +2609,7 @@ dependencies = [
 
 [[package]]
 name = "db-commons"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "hex",
@@ -3064,7 +3064,7 @@ dependencies = [
 
 [[package]]
 name = "dummy_cell"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "myrmic-sdk-macros",
@@ -3712,7 +3712,7 @@ dependencies = [
 
 [[package]]
 name = "esp-codegen"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "include_dir",
@@ -3726,7 +3726,7 @@ dependencies = [
 
 [[package]]
 name = "esp-common"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-db-service",
  "embassy-futures",
@@ -3760,7 +3760,7 @@ dependencies = [
 
 [[package]]
 name = "esp-firmware"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-protocol",
  "critical-section",
@@ -3785,7 +3785,7 @@ dependencies = [
 
 [[package]]
 name = "esp-firmware-build"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "esp-codegen",
  "esp-mmu-consts",
@@ -3796,7 +3796,7 @@ dependencies = [
 
 [[package]]
 name = "esp-firmware-macros"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3877,7 +3877,7 @@ dependencies = [
 
 [[package]]
 name = "esp-heap"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "esp-alloc",
  "esp-hal",
@@ -3915,7 +3915,7 @@ checksum = "911aadae41ec99104efa865bd0b6e486b4b735999f9b571963748a46d16495ab"
 
 [[package]]
 name = "esp-mmu"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cfg-match",
  "critical-section",
@@ -3929,11 +3929,11 @@ dependencies = [
 
 [[package]]
 name = "esp-mmu-consts"
-version = "0.7.0"
+version = "0.7.1"
 
 [[package]]
 name = "esp-network"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "edge-nal",
  "edge-nal-embassy",
@@ -4147,7 +4147,7 @@ dependencies = [
 
 [[package]]
 name = "esp-watchdog"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-protocol",
  "critical-section",
@@ -4399,21 +4399,21 @@ dependencies = [
 
 [[package]]
 name = "event_publish"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "event_subscribe"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "event_subscribe_b"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
@@ -4426,7 +4426,7 @@ checksum = "2acce4a10f12dc2fb14a218589d4f1f62ef011b2d0cc4b3cb1bba8e94da14649"
 
 [[package]]
 name = "fan-curve"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-signal-layer-types",
  "signal-layer-core",
@@ -4479,7 +4479,7 @@ checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
 
 [[package]]
 name = "filestore-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "claims",
  "db-client",
@@ -4510,7 +4510,7 @@ checksum = "aedcfb3409746eddb02b9e19ebda1c3394f759a152e48ee875a0844d1b955484"
 
 [[package]]
 name = "firmware-examples"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-executor",
  "embassy-time",
@@ -4969,7 +4969,7 @@ dependencies = [
 
 [[package]]
 name = "gpio-output-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "log",
@@ -4978,7 +4978,7 @@ dependencies = [
 
 [[package]]
 name = "gpio-output-feedback-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "gpio-output-driver",
@@ -5429,7 +5429,7 @@ dependencies = [
 
 [[package]]
 name = "hysteresis"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-signal-layer-types",
  "signal-layer-core",
@@ -5741,7 +5741,7 @@ dependencies = [
 
 [[package]]
 name = "introspection-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "claims",
@@ -5757,7 +5757,7 @@ dependencies = [
 
 [[package]]
 name = "introspection-common"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "serde",
@@ -6308,7 +6308,7 @@ checksum = "2b23ac50abb8261cb38c6e2a7192d3302e0836dac1628f6a93b82b4fad185897"
 
 [[package]]
 name = "linux-codegen"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "include_dir",
@@ -6337,7 +6337,7 @@ dependencies = [
 
 [[package]]
 name = "linux-gpio-shim"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "linux-embedded-hal",
@@ -6346,7 +6346,7 @@ dependencies = [
 
 [[package]]
 name = "linux-i2c-shim"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "embedded-hal-async",
@@ -6368,7 +6368,7 @@ checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
 name = "linux-spi-shim"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "embedded-hal-async",
@@ -6450,7 +6450,7 @@ dependencies = [
 
 [[package]]
 name = "lsm6dso32-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-time",
  "embedded-hal-async",
@@ -6527,7 +6527,7 @@ checksum = "47e1ffaa40ddd1f3ed91f717a33c8c0ee23fff369e3aa8772b9605cc1d22f4c3"
 
 [[package]]
 name = "max-value"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "signal-layer-core",
 ]
@@ -6672,7 +6672,7 @@ dependencies = [
 
 [[package]]
 name = "min-value"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "signal-layer-core",
 ]
@@ -6716,7 +6716,7 @@ dependencies = [
 
 [[package]]
 name = "modem-esp32"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "ads1115-driver",
  "bme280-driver",
@@ -6750,7 +6750,7 @@ dependencies = [
 
 [[package]]
 name = "moving-average"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "signal-layer-core",
 ]
@@ -6763,7 +6763,7 @@ checksum = "743fb55ba31b18fb1ecef6bdc9aa2743314978ac084044301a7eee33fb99a20d"
 
 [[package]]
 name = "myrmic-build"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "aot-compiler",
@@ -6786,7 +6786,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-cli"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "base32",
@@ -6840,7 +6840,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-common"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "claims",
  "embedded-io 0.6.1",
@@ -6865,7 +6865,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-flash"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "dialoguer",
@@ -6877,7 +6877,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-sdk"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "chrono",
  "critical-section",
@@ -6898,7 +6898,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-sdk-macros"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -6915,7 +6915,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-signal-layer-types"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "postcard",
  "serde",
@@ -6923,7 +6923,7 @@ dependencies = [
 
 [[package]]
 name = "myrmic-tags"
-version = "0.7.0"
+version = "0.7.1"
 
 [[package]]
 name = "nanorand"
@@ -7574,7 +7574,7 @@ dependencies = [
 
 [[package]]
 name = "outlet-bridge"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "myrmic-signal-layer-types",
@@ -7907,7 +7907,7 @@ checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
 
 [[package]]
 name = "pipeline-backend-api"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "indexmap 2.14.2",
@@ -7920,7 +7920,7 @@ dependencies = [
 
 [[package]]
 name = "pipeline-codegen"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "indexmap 2.14.2",
@@ -8253,7 +8253,7 @@ dependencies = [
 
 [[package]]
 name = "pwm-output-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "log",
@@ -9744,7 +9744,7 @@ dependencies = [
 
 [[package]]
 name = "signal-layer-core"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "critical-section",
  "heapless 0.9.3",
@@ -9756,7 +9756,7 @@ dependencies = [
 
 [[package]]
 name = "signal-layer-ipc"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "libc",
  "postcard",
@@ -9768,7 +9768,7 @@ dependencies = [
 
 [[package]]
 name = "signal-layer-linux-rt"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "libc",
  "postcard",
@@ -9779,7 +9779,7 @@ dependencies = [
 
 [[package]]
 name = "signal-layer-logger"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "myrmic-sdk-macros",
@@ -9798,7 +9798,7 @@ dependencies = [
 
 [[package]]
 name = "sim-source-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal-async",
  "embedded-hal-mock",
@@ -9848,7 +9848,7 @@ checksum = "85636c14b73d81f541e525f585c0a2109e6744e1565b5c1668e31c70c10ed65c"
 
 [[package]]
 name = "skey"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "byteorder",
@@ -9862,7 +9862,7 @@ dependencies = [
 
 [[package]]
 name = "skey-macros"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "darling 0.21.3",
  "heck",
@@ -9885,7 +9885,7 @@ checksum = "e794b692443f8d9b677cd41c867347df2902844d7b7f5775f47fcb37b9e7965b"
 
 [[package]]
 name = "slow-init-cell-logic"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
  "myrmic-sdk-macros",
@@ -9962,7 +9962,7 @@ dependencies = [
 
 [[package]]
 name = "sorg-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-mailbox",
  "cell-protocol",
@@ -9979,7 +9979,7 @@ dependencies = [
 
 [[package]]
 name = "sorg-common"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-mailbox",
  "cell-protocol",
@@ -10004,7 +10004,7 @@ dependencies = [
 
 [[package]]
 name = "sorg-ctl"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "clap",
  "comfy-table",
@@ -10023,7 +10023,7 @@ dependencies = [
 
 [[package]]
 name = "sorg-execution"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "axum 0.8.9",
  "axum-server",
@@ -10074,7 +10074,7 @@ dependencies = [
 
 [[package]]
 name = "sorg-orchestration"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-protocol",
  "claims",
@@ -10104,7 +10104,7 @@ dependencies = [
 
 [[package]]
 name = "sorg-tests"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cell-protocol",
  "claims",
@@ -10199,7 +10199,7 @@ dependencies = [
 
 [[package]]
 name = "spi-loopback-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embedded-hal-async",
  "embedded-hal-mock",
@@ -10439,7 +10439,7 @@ checksum = "b7401a30af6cb5818bb64852270bb722533397edcfc7344954a38f420819ece2"
 
 [[package]]
 name = "swarm"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "cell-protocol",
@@ -10503,7 +10503,7 @@ dependencies = [
 
 [[package]]
 name = "swarm-api"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "flume 0.11.1",
@@ -10516,7 +10516,7 @@ dependencies = [
 
 [[package]]
 name = "swarm-cli"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -10529,7 +10529,7 @@ dependencies = [
 
 [[package]]
 name = "swarm-gateway"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "axum 0.8.9",
@@ -10553,7 +10553,7 @@ dependencies = [
 
 [[package]]
 name = "swarm-onboarding"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "aes-gcm",
  "base64 0.22.1",
@@ -10589,14 +10589,14 @@ dependencies = [
 
 [[package]]
 name = "swarm-onboarding-request"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "swarm-telemetry"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "anyhow",
  "base32",
@@ -10632,7 +10632,7 @@ dependencies = [
 
 [[package]]
 name = "swarm-telemetry-embedded"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-executor",
  "embassy-sync 0.8.0",
@@ -10769,7 +10769,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
 name = "tap-bridge"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
@@ -10825,7 +10825,7 @@ dependencies = [
 
 [[package]]
 name = "test-control"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "futures",
  "serde",
@@ -10840,7 +10840,7 @@ dependencies = [
 
 [[package]]
 name = "test-control-client"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "sorg-tests",
  "test-control-common",
@@ -10851,7 +10851,7 @@ dependencies = [
 
 [[package]]
 name = "test-control-common"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "introspection-client",
  "introspection-common",
@@ -10861,7 +10861,7 @@ dependencies = [
 
 [[package]]
 name = "test-framework"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "axum 0.8.9",
  "bollard",
@@ -10978,7 +10978,7 @@ dependencies = [
 
 [[package]]
 name = "threshold-trigger"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-signal-layer-types",
  "signal-layer-core",
@@ -11473,14 +11473,14 @@ dependencies = [
 
 [[package]]
 name = "trace_example_intermediate"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
 
 [[package]]
 name = "trace_example_sink"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "myrmic-sdk",
 ]
@@ -12026,7 +12026,7 @@ dependencies = [
 
 [[package]]
 name = "veml7700-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-time",
  "embedded-hal-async",
@@ -12223,7 +12223,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-runtime"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bitflags 2.13.2",
  "cell-protocol",
@@ -12256,7 +12256,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-runtime-macros"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -12265,7 +12265,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-storage"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cfg-match",
  "crc",
@@ -12987,7 +12987,7 @@ dependencies = [
 
 [[package]]
 name = "wsen-itds-driver"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "embassy-time",
  "embedded-hal-async",
@@ -13543,7 +13543,7 @@ dependencies = [
 
 [[package]]
 name = "zenoh-nano"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "async-compat",
  "bt-hci",
@@ -13688,7 +13688,7 @@ dependencies = [
 
 [[package]]
 name = "zenoh-traits"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "critical-section",
  "defmt 1.1.1",
