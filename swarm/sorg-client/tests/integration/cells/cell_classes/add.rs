@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use cell_protocol::{ArtifactPlatform, BlobHash, ClassInfo};
-use claims::{assert_ok, assert_some};
+use claims::{assert_err, assert_none, assert_ok, assert_some};
 
 use super::{AOT_BINARY, CLASS_NAME, DUMMY_BINARY, OTHER_BINARY, OTHER_NAME, sorg_client};
 use crate::integration::spawn_db_test_app;
@@ -210,4 +210,48 @@ async fn wasm_classes_share_an_identical_aot() {
         assert_eq!(compiled, BTreeMap::from([(PLATFORM, aot)]));
     }
     assert_eq!(3, assert_ok!(sorg.list_classes().await).len());
+}
+
+/// One binary is one id, so it can't be an AOT binary and a wasm class at once.
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+async fn wasm_already_registered_as_aot_is_rejected() {
+    let test_app = spawn_db_test_app().await;
+    let sorg = sorg_client(test_app.session());
+
+    // Arrange
+    assert_ok!(
+        sorg.add_class_aot(CLASS_NAME, PLATFORM, AOT_BINARY.to_vec())
+            .await
+    );
+
+    // Act
+    let added = sorg
+        .add_class(OTHER_NAME, AOT_BINARY.to_vec(), vec![])
+        .await;
+
+    // Assert — rejected as a whole: the name isn't bound either
+    assert_err!(added);
+    assert_none!(assert_ok!(sorg.resolve_class_name(OTHER_NAME).await));
+}
+
+/// The other direction: the bytes of a wasm class can't be added as an AOT binary.
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+async fn aot_already_registered_as_wasm_is_rejected() {
+    let test_app = spawn_db_test_app().await;
+    let sorg = sorg_client(test_app.session());
+
+    // Arrange
+    assert_ok!(
+        sorg.add_class(CLASS_NAME, DUMMY_BINARY.to_vec(), vec![])
+            .await
+    );
+
+    // Act
+    let added = sorg
+        .add_class_aot(OTHER_NAME, PLATFORM, DUMMY_BINARY.to_vec())
+        .await;
+
+    // Assert — rejected as a whole: the name isn't bound either
+    assert_err!(added);
+    assert_none!(assert_ok!(sorg.resolve_class_name(OTHER_NAME).await));
 }

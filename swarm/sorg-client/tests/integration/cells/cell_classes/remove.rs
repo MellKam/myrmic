@@ -1,5 +1,6 @@
 use cell_protocol::{ArtifactPlatform, BlobHash, Sri};
 use claims::{assert_none, assert_ok, assert_some};
+use myrmic_common::cells::spawn_ref::SPAWN_REF_MAGIC;
 use sorg_common::class_registry::{ClassReference, Removal};
 use sorg_common::{CellConfig, CellDeployment, root_restart};
 
@@ -221,4 +222,39 @@ async fn aot_of_a_wasm_class_is_kept() {
 
     // Assert
     assert_eq!(removal, Removal::Kept(vec![ClassReference::Class(id)]));
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+async fn class_spawned_by_another_class_is_kept() {
+    let test_app = spawn_db_test_app().await;
+    let sorg = sorg_client(test_app.session());
+
+    // Arrange — a child class without a name, and a parent whose wasm spawns it
+    let child = assert_ok!(
+        sorg.add_class(OTHER_NAME, OTHER_BINARY.to_vec(), vec![])
+            .await
+    );
+    assert!(assert_ok!(sorg.unbind_class_name(OTHER_NAME, child).await));
+    let parent = assert_ok!(sorg.add_class(CLASS_NAME, spawning(child), vec![]).await);
+
+    // Act
+    let removal = assert_ok!(sorg.remove_class_if_unreferenced(child).await);
+
+    // Assert
+    assert_eq!(removal, Removal::Kept(vec![ClassReference::Class(parent)]));
+}
+
+/// A wasm stand-in with one spawn reference, patched to `child` as a deploy patches it.
+fn spawning(child: BlobHash) -> Vec<u8> {
+    let BlobHash::Sha2(hash) = child;
+    let name = "child";
+    let mut wasm = SPAWN_REF_MAGIC.to_vec();
+    wasm.extend_from_slice(&hash);
+    wasm.extend_from_slice(
+        &u32::try_from(name.len())
+            .expect("a short name")
+            .to_le_bytes(),
+    );
+    wasm.extend_from_slice(name.as_bytes());
+    wasm
 }
