@@ -107,7 +107,7 @@ pub enum Command {
     /// Compiles the cell to the provided platform (default is `linux`)
     /// Can also be used to generate an api file to provide external parties your cell's API.
     ///
-    /// A crate whose `[package.metadata.myrmic]` names a `firmware` chip is built
+    /// A crate whose `[package.metadata.myrmic]` sets `firmware = "esp32"` is built
     /// as an ESP firmware image instead: the ELF plus the partition table it
     /// should be flashed with, which `myrmic flash` does in one go.
     ///
