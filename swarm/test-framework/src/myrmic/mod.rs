@@ -465,21 +465,17 @@ fn deployed_sris(stderr: &str) -> Vec<String> {
         .collect()
 }
 
-/// the zid from `myrmic runtimes start -d`'s `runtime "<name>" ready (<zid>)` line
-fn started_runtime_zid(stderr: &str, name: &str) -> zenoh::config::ZenohId {
+/// the zid from `myrmic runtimes start -d`'s `runtime "<name>" ready (<zid>)` line; `None` if
+/// there is no such line or it holds no valid zid
+fn started_runtime_zid(stderr: &str, name: &str) -> Option<zenoh::config::ZenohId> {
     let ready = format!("runtime {name:?} ready (");
-    let zid = stderr
-        .lines()
-        .find_map(|line| {
-            line.strip_prefix(INFO_PREFIX)?
-                .strip_prefix(&ready)?
-                .strip_suffix(')')
-        })
-        .unwrap_or_else(|| {
-            panic!("`myrmic runtimes start` reported no zid for `{name}`\n{stderr}")
-        });
-    zid.parse()
-        .unwrap_or_else(|err| panic!("`myrmic runtimes start` reported `{zid}` as zid: {err}"))
+    stderr.lines().find_map(|line| {
+        line.strip_prefix(INFO_PREFIX)?
+            .strip_prefix(&ready)?
+            .strip_suffix(')')?
+            .parse()
+            .ok()
+    })
 }
 
 /// Options for one `myrmic runtimes start`, created by [`Myrmic::runtime`].
@@ -548,7 +544,14 @@ where
             args.push(path_arg(config));
         }
         let output = self.myrmic.run(&args).await?;
-        let zid = started_runtime_zid(&output.stderr, &self.name);
+        let Some(zid) = started_runtime_zid(&output.stderr, &self.name) else {
+            // The daemon runs, but there is no Runtime yet whose drop would delete it.
+            let deleted = self.myrmic.delete_runtime(&self.name).await;
+            panic!(
+                "`myrmic runtimes start` reported no zid for `{}` (deleting it: {deleted:?})\n{}",
+                self.name, output.stderr
+            );
+        };
         Ok(Runtime {
             myrmic: self.myrmic.clone(),
             name: self.name,
