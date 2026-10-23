@@ -7,6 +7,7 @@
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fmt::Debug;
 use std::hash::Hash;
+use std::time::Duration;
 
 use cell_protocol::{RuntimeId, Sri};
 use zenoh::config::ZenohId;
@@ -223,7 +224,8 @@ where
 }
 
 /// Wait until exactly the runtimes `expected` answer the status query on `introspection`, each
-/// linked to all the others. Fails with the last mismatch after [`crate::wait::DEFAULT_TIMEOUT`].
+/// linked to all the others, then [`LEADER_SETTLE_TIME`]. Fails with the last mismatch after
+/// [`crate::wait::DEFAULT_TIMEOUT`].
 async fn wait_until_connected(
     introspection: &introspection_client::v1::Client,
     expected: &BTreeSet<ZenohId>,
@@ -245,8 +247,16 @@ async fn wait_until_connected(
     .await;
     polled.map_err(|_| Error::Timeout {
         waited_for: format!("the swarm to be connected; last: {last_mismatch}"),
-    })
+    })?;
+    tokio::time::sleep(LEADER_SETTLE_TIME).await;
+    Ok(())
 }
+
+/// How long the orchestrators get to agree on a leader once the swarm is connected. Each one
+/// learns of the others from join events, and until it has, one that knows no lower zid takes
+/// itself for the leader: two leaders both handle a deploy, and the second answers "already
+/// deployed". Nothing reports who considers itself leader, so this is a fixed wait.
+const LEADER_SETTLE_TIME: Duration = Duration::from_secs(1);
 
 /// `myrmic runtimes start` of the runtime `id`, named `name`.
 async fn start_runtime<B, S>(
