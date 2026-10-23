@@ -89,11 +89,15 @@ It automatically passes `--xip` and the correct `--cpu-features` for the selecte
 
 The flags it encodes per target are:
 
-| SoC       | `--cpu-features` | `cargo` target                                             |
-|-----------|-----------------|------------------------------------------------------------|
-| ESP32-C5  | `+i,+m,+a,+c`   | `--target riscv32imac-unknown-none-elf --features esp32c5` |
-| ESP32-C6  | `+i,+m,+a,+c`   | `--target riscv32imac-unknown-none-elf --features esp32c6` |
-| ESP32-C61 | `+i,+m,+a,+c`   | `--target riscv32imac-unknown-none-elf --features esp32c61`|
+| SoC       | `--cpu-features`                    | `cargo` target                                              |
+|-----------|-------------------------------------|-------------------------------------------------------------|
+| ESP32-C5  | `+i,+m,+a,+c`                       | `--target riscv32imac-unknown-none-elf --features esp32c5`  |
+| ESP32-C6  | `+i,+m,+a,+c,+unaligned-scalar-mem` | `--target riscv32imac-unknown-none-elf --features esp32c6`  |
+| ESP32-C61 | `+i,+m,+a,+c`                       | `--target riscv32imac-unknown-none-elf --features esp32c61` |
+
+`+unaligned-scalar-mem` makes wasm loads and stores compile to single word accesses instead of
+byte-by-byte sequences. It is enabled on the ESP32-C6, which handles misaligned access in
+hardware; the C5 and C61 have not been checked yet (see the TODO in the aot-compiler).
 
 ### Tuning the firmware / AOT flash split
 

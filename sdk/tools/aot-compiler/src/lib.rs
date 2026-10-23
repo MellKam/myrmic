@@ -23,11 +23,31 @@ impl Target {
     /// Translate the target into the corresponding `wamrc` CLI flags.
     pub fn to_wamrc_args(self) -> Vec<&'static str> {
         match self {
-            Self::ESP32C5 | Self::ESP32C6 | Self::ESP32C61 => vec![
+            // TODO: try `+unaligned-scalar-mem` here too (see the C6 arm). Their TRMs indicate
+            // it is supported: the HP CPU's exception codes include no load-misaligned cause,
+            // mcause 6 is raised only for misaligned atomics (LR/SC/AMO), and the bus-error
+            // section mentions "misaligned accesses which are split into multiple loads/stores".
+            // Not yet tested on hardware, though, and nothing is documented for PSRAM, where
+            // `esp-heap` places general allocations (likely including a cell's linear memory)
+            // on these chips. Run the same misaligned `lw`/`sw` test there before enabling it.
+            Self::ESP32C5 | Self::ESP32C61 => vec![
                 "--target=riscv32",
                 "--target-abi=ilp32",
                 "--cpu=generic-rv32",
                 "--cpu-features=+i,+m,+a,+c",
+            ],
+            // `+unaligned-scalar-mem` lets LLVM emit one `lw`/`sw` per wasm load/store. WAMR
+            // gives every non-atomic access alignment 1 (the wasm `align` immediate is only a
+            // hint, so it cannot be trusted), and without this feature LLVM splits each one
+            // into byte accesses plus shifts/ors. The C6 does misaligned `lw`/`sw` in hardware
+            // (`lw` 147 ns vs 125 ns aligned, `sw` 137 ns vs 113 ns, no trap, correct bytes).
+            // Measured on a C6: sum 5.6x -> 3.0x native, scale 4.5x -> 2.6x, memcpy-style copy
+            // 8.4x -> 6.2x, AOT 22% smaller.
+            Self::ESP32C6 => vec![
+                "--target=riscv32",
+                "--target-abi=ilp32",
+                "--cpu=generic-rv32",
+                "--cpu-features=+i,+m,+a,+c,+unaligned-scalar-mem",
             ],
         }
     }
