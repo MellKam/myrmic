@@ -1,0 +1,5 @@
+[build]
+target = "riscv32imac-unknown-none-elf"
+[env]
+# Experiment: RTOS scheduler tick 1000 Hz instead of the default 100 Hz.
+ESP_RTOS_CONFIG_TICK_RATE_HZ = "1000"

@@ -1,0 +1,130 @@
+INFO  Serial port: '/dev/cu.usbmodem1101'
+INFO  Connecting...
+INFO  Using flash stub
+Chip type:         esp32c6 (revision v0.2)
+Crystal frequency: 40 MHz
+Flash size:        4MB
+Features:          WiFi 6, BT 5
+MAC address:       9c:cc:01:33:a1:60
+INFO  Building firmware: /Users/melkam/Desktop/myrmic/aot-experiment/firmware/Cargo.toml
+   Compiling esp-hal v1.2.0-rc.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling esp-println v0.17.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+warning: firmware@0.1.0: BLE is disabled by default for the ESP32-C6. If you wish to enable it, please use '--features ble' during compilation.
+   Compiling esp-backtrace v0.19.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling esp-storage v0.9.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling esp-mmu v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/esp-mmu)
+   Compiling esp-phy v0.2.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling esp-watchdog v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/esp-watchdog)
+   Compiling esp-heap v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/esp-heap)
+   Compiling esp-rtos v0.3.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling wasm-storage v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/wasm-storage)
+   Compiling esp-radio v1.0.0-beta.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling esp-bootloader-esp-idf v0.5.0 (https://github.com/peeriot/esp-hal.git?branch=feature%2Fble-host-npl-upstream#2d554a6b)
+   Compiling wasm-runtime v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/wasm-runtime)
+   Compiling esp-network v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/esp-network)
+   Compiling cell-db-service v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/cell-db-service)
+   Compiling esp-common v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/esp-common)
+   Compiling esp-firmware v0.7.0 (/Users/melkam/Desktop/myrmic/aot-experiment/myrmic-394b373b/embedded/esp-hal/crates/esp-firmware)
+   Compiling firmware v0.1.0 (/Users/melkam/Desktop/myrmic/aot-experiment/firmware)
+    Finished `release` profile [optimized] target(s) in 14.11s
+INFO  Flashing /Users/melkam/Desktop/myrmic/aot-experiment/firmware/target/riscv32imac-unknown-none-elf/release/firmware...
+App/part. size:    2,448,160/3,080,192 bytes, 79.48%
+INFO  Flashed; the board is booting
+INFO  Monitoring /dev/cu.usbmodem1101 (Ctrl-C to stop)
+I (118) esp_image: segment 2: paddr=00040020 vaddr=42030020 size=2129d0h (2173392) map
+I (533) esp_image: segment 3: paddr=002529f8 vaddr=408029a4 size=12f18h ( 77592) load
+I (550) esp_image: segment 4: paddr=00265918 vaddr=408158c0 size=001e0h (   480) load
+I (556) boot: Loaded app from partition at offset 0x10000
+I (556) boot: Disabling RNG early entropy source...
+[32mINFO - [heap] boot layout: main 291 KiB + dram2 64 KiB + PSRAM 0 KiB = 355 KiB total (16 KiB stack reserved)[0m
+[32mINFO - Init![0m
+[32mINFO - NATIVE Instant::now: 1000 call in 1121 us = 1121 ns/call[0m
+[32mINFO - NATIVE sum: 40960 word in 2590 us = 63 ns/word[0m
+[32mINFO - NATIVE scale: 40960 word in 4121 us = 100 ns/word[0m
+[32mINFO - NATIVE copy 4 KB: 200 KB in 1783 us = 8915 ns/KB[0m
+[32mINFO - NATIVE ROM memcpy 4 KB: 200 KB in 1756 us = 8780 ns/KB[0m
+[32mINFO - NATIVE ROM memmove 4 KB: 200 KB in 17951 us = 89755 ns/KB[0m
+[32mINFO - NATIVE xorshift64: 10000 iter in 2645 us = 264 ns/iter[0m
+[32mINFO - NATIVE done (sink 8156879420830493079)[0m
+[32mINFO - [watchdog] armed: MWDT stage0 interrupt 30 s + stage1 reset 15 s; RWDT backstop 60 s[0m
+[32mINFO - Starting runtime handler[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 210924, crc: 4098230686, hash: [110, 222, 105, 167, 193, 238, 11, 170, 8, 228, 64, 125, 163, 133, 220, 114, 135, 122, 51, 149, 116, 54, 221, 35, 85, 30, 169, 175, 14, 14, 56, 251] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - start connection task[0m
+[32mINFO - Scan[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - Starting Cell task[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -52, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -57, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -47, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [80, 76], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -76, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [80, 76], operating_class: AllEnvironments }) }[0m
+[32mINFO - About to connect...[0m
+[32mINFO - Wifi connected to ConnectedInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, authmode: Wpa2Personal, aid: 1 }[0m
+[32mINFO - Waiting to get IP address...[0m
+[32mINFO - Got IP: 172.20.10.2[0m
+[32mINFO - Scouting for Zenoh nodes...[0m
+[32mINFO - Discovered Zenoh node at tcp/172.20.10.3:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:1c09:4993:b4bc:ffc]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:d199:87ca:f95d:ab19]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::1]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::3677:9c9f:f798:6657]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::38e2:dbff:fe18:53b]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::583b:c88f:5963:dbb7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::7da9:ac8f:2d12:e6b7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::8432:c3b7:b60:623c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b0be:83ff:fe18:e945]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b6d3:1a0a:f890:8d7c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::cbe:9927:4165:3992]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ce81:b1c:bd2c:69e]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ecda:1ce0:fe0d:d9ee]:57021[0m
+[32mINFO - Using Zenoh node at 172.20.10.3:57021 (hello from 172.20.10.3)[0m
+[32mINFO - Starting WASM request handler[0m
+[32mINFO - clock synced to swarm time (1792710780s since epoch)[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - [sweep] releasing '26a473c7-1e7f-5b45-bcea-9318daef82e3' from a previous boot[0m
+[32mINFO - [fencing] released rows for '26a473c7-1e7f-5b45-bcea-9318daef82e3'[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - WASM module is already stored on device.[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 210924, crc: 4098230686, hash: [110, 222, 105, 167, 193, 238, 11, 170, 8, 228, 64, 125, 163, 133, 220, 114, 135, 122, 51, 149, 116, 54, 221, 35, 85, 30, 169, 175, 14, 14, 56, 251] }[0m
+[32mINFO - [db] WASM module already stored, skipping transfer[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[32mINFO - module log: BENCH ticks: started, period 1000 us, 2000 ticks[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=184/423/50 getsri=2261/2655/50 args=4541/13835/50 open=6938/76005/51 run=1054/8115/51 commit=4397/41992/51 tick=18623/96143/50 handoff=3403/87689/320 dispatch=1884/2463/320 exec=1210/81580/320 reply=273/9364/320 pump=18802/96257/52 dropped=384[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=182/203/50 getsri=2261/2511/50 args=4359/4558/50 open=5630/5889/50 run=936/1329/50 commit=3659/3963/50 tick=17057/17573/50 handoff=2575/3917/300 dispatch=1992/2214/300 exec=330/1042/300 reply=220/958/300 pump=17203/18204/50 dropped=337[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=177/199/50 getsri=2279/2935/50 args=4389/5895/50 open=5699/7887/50 run=918/1058/50 commit=3758/5802/50 tick=17258/23223/50 handoff=2610/5742/300 dispatch=1998/2975/300 exec=351/3545/300 reply=227/2007/300 pump=17387/23334/50 dropped=347[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=175/199/50 getsri=2258/2338/50 args=4369/4647/50 open=5700/6964/50 run=910/1248/50 commit=3625/5200/50 tick=17075/18468/50 handoff=2581/5156/300 dispatch=1991/2721/300 exec=340/2914/300 reply=216/774/300 pump=17227/18692/50 dropped=337[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=175/197/50 getsri=2243/2339/50 args=4351/4432/50 open=5663/6029/50 run=949/2382/50 commit=3679/5212/50 tick=17100/19123/50 handoff=2579/5165/300 dispatch=1989/2166/300 exec=345/2975/300 reply=212/977/300 pump=17250/19244/50 dropped=336[0m
+[33mWARN - [async req][CellHost] CancelTimer failed: timer not found[0m
+[31mERROR - failed to cancel timer: id=0[0m
+[32mINFO - module log: BENCH ticks: 259 handled, 4440272 us from first to last, mean gap 17210 us = 58 ticks/s[0m
+[32mINFO - module log: BENCH ticks: started, period 10000 us, 2000 ticks[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=176/226/50 getsri=2121/3321/50 args=4178/4496/50 open=6259/57854/52 run=992/6882/52 commit=4808/42803/52 tick=17279/68106/50 handoff=2742/47972/320 dispatch=1775/3006/320 exec=707/46510/320 reply=224/7218/320 pump=17388/68262/52 dropped=30[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=176/187/50 getsri=2182/2508/50 args=4347/4515/50 open=5619/7203/50 run=851/1124/50 commit=3508/3939/50 tick=16715/17742/50 handoff=2533/4706/300 dispatch=1969/2310/300 exec=333/2693/300 reply=198/855/300 pump=16884/19152/50 dropped=35[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=175/218/50 getsri=2170/2364/50 args=4363/4617/50 open=5621/7469/50 run=847/997/50 commit=3511/3916/50 tick=16724/18514/50 handoff=2530/3877/300 dispatch=1969/2245/300 exec=325/1009/300 reply=204/926/300 pump=16856/18638/50 dropped=35[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=215/2188/50 getsri=2236/5269/50 args=4368/4633/50 open=5577/6856/50 run=855/1016/50 commit=3539/6058/50 tick=16797/19529/50 handoff=2543/6000/300 dispatch=1962/2317/300 exec=344/3911/300 reply=203/3100/300 pump=16967/19644/50 dropped=35[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=180/211/50 getsri=2163/2345/50 args=4378/5232/50 open=5595/7019/50 run=858/1026/50 commit=3526/3870/50 tick=16735/17805/50 handoff=2535/4705/300 dispatch=1972/2855/300 exec=331/2677/300 reply=198/730/300 pump=16878/17980/50 dropped=35[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=179/455/50 getsri=2161/2353/50 args=4369/4515/50 open=5573/5762/50 run=860/1101/50 commit=3519/3790/50 tick=16692/17035/50 handoff=2528/3746/300 dispatch=1973/2245/300 exec=325/1204/300 reply=197/665/300 pump=16836/17869/50 dropped=34[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=176/189/50 getsri=2210/3904/50 args=4398/6052/50 open=5621/8770/50 run=857/1079/50 commit=3594/5572/50 tick=16892/19927/50 handoff=2561/5527/300 dispatch=1979/2795/300 exec=336/2983/300 reply=212/2570/300 pump=17025/20059/50 dropped=36[0m
+[32mINFO - module log: BENCH ticks: 353 handled, 6053814 us from first to last, mean gap 17198 us = 58 ticks/s[0m
+[32mINFO - module log: BENCH ticks: started, period 50000 us, 2000 ticks[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=23713/45426/50 getsri=996/2923/50 args=1833/6218/50 open=6219/110624/52 run=947/6752/52 commit=5373/71330/52 tick=13816/120909/50 handoff=2309/108297/320 dispatch=774/2571/320 exec=1285/106220/320 reply=216/9340/320 pump=12014/121160/51 dropped=18[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=45150/45450/50 getsri=240/369/50 args=243/257/50 open=1787/3183/50 run=762/2057/50 commit=1580/1971/50 tick=4821/6642/50 handoff=565/2831/300 dispatch=36/88/300 exec=325/1201/300 reply=171/1895/300 pump=36/51/50 dropped=0[0m
+[32mINFO - PROBE 50 ticks (avg/max us/count): wait=45172/45430/50 getsri=248/363/50 args=243/259/50 open=1793/2390/50 run=741/983/50 commit=1558/2115/50 tick=4792/6461/50 handoff=563/2070/300 dispatch=38/401/300 exec=324/1152/300 reply=166/1252/300 pump=35/51/50 dropped=0[0m
+[32mINFO - module log: BENCH ticks: 161 handled, 7956059 us from first to last, mean gap 49725 us = 20 ticks/s[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m

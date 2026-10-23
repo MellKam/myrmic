@@ -1,0 +1,183 @@
+INFO  Serial port: '/dev/cu.usbmodem1101'
+INFO  Connecting...
+INFO  Using flash stub
+Chip type:         esp32c6 (revision v0.2)
+Crystal frequency: 40 MHz
+Flash size:        4MB
+Features:          WiFi 6, BT 5
+MAC address:       9c:cc:01:33:a1:60
+INFO  Building firmware: /Users/melkam/Desktop/myrmic/aot-experiment/firmware/Cargo.toml
+   Compiling firmware v0.1.0 (/Users/melkam/Desktop/myrmic/aot-experiment/firmware)
+warning: firmware@0.1.0: BLE is disabled by default for the ESP32-C6. If you wish to enable it, please use '--features ble' during compilation.
+warning: suspicious definition of the runtime `memcpy` symbol used by the standard library
+  --> src/main.rs:23:5
+   |
+23 |     fn memcpy(dst: *mut u8, src: *const u8, n: usize) -> *mut u8;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected `unsafe extern "C" fn(*mut c_void, *const c_void, usize) -> *mut c_void`
+           found    `unsafe extern "C" fn(*mut u8, *const u8, usize) -> *mut u8`
+   = help: either fix the signature or remove any attributes like `#[unsafe(no_mangle)]`, `#[unsafe(export_name = "memcpy")]`, or `#[link_name = "memcpy"]`
+   = help: allow this lint if the signature is compatible
+   = note: `#[warn(suspicious_runtime_symbol_definitions)]` on by default
+
+warning: `firmware` (bin "firmware") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 14.37s
+INFO  Flashing /Users/melkam/Desktop/myrmic/aot-experiment/firmware/target/riscv32imac-unknown-none-elf/release/firmware...
+App/part. size:    2,462,864/3,080,192 bytes, 79.96%
+INFO  Flashed; the board is booting
+INFO  Monitoring /dev/cu.usbmodem1101 (Ctrl-C to stop)
+I (535) esp_image: segment 3: paddr=002560e8 vaddr=40802724 size=13198h ( 78232) load
+I (553) esp_image: segment 4: paddr=00269288 vaddr=408158c0 size=001e0h (   480) load
+I (558) boot: Loaded app from partition at offset 0x10000
+I (559) boot: Disabling RNG early entropy source...
+[32mINFO - [heap] boot layout: main 291 KiB + dram2 64 KiB + PSRAM 0 KiB = 355 KiB total (16 KiB stack reserved)[0m
+[32mINFO - Init![0m
+[32mINFO - NATIVE Instant::now: 1000 call in 1120 us = 1120 ns/call[0m
+[32mINFO - NATIVE sum: 40960 word in 2588 us = 63 ns/word[0m
+[32mINFO - NATIVE scale: 40960 word in 4124 us = 100 ns/word[0m
+[32mINFO - NATIVE copy 4 KB: 200 KB in 1788 us = 8940 ns/KB[0m
+[32mINFO - NATIVE ROM memcpy 4 KB: 200 KB in 1756 us = 8780 ns/KB[0m
+[32mINFO - NATIVE memmove (firmware) 4 KB: 200 KB in 1788 us = 8940 ns/KB[0m
+[32mINFO - NATIVE ROM memmove 4 KB: 200 KB in 17948 us = 89740 ns/KB[0m
+[32mINFO - NATIVE memmove overlap 1 B: 200 KB in 17976 us = 89880 ns/KB[0m
+[32mINFO - NATIVE memmove overlap 64 B: 200 KB in 4262 us = 21310 ns/KB[0m
+[32mINFO - NATIVE memmove overlap check: correct[0m
+[32mINFO - NATIVE xorshift64: 10000 iter in 2644 us = 264 ns/iter[0m
+[32mINFO - NATIVE lw aligned: 1000 load in 137 us = 137 ns/load[0m
+[32mINFO - NATIVE byte-split load (WAMR today): 1000 load in 228 us = 228 ns/load[0m
+[32mINFO - NATIVE misaligned lw: trying (a trap here means no hardware support)[0m
+[32mINFO - NATIVE lw misaligned: 1000 load in 136 us = 136 ns/load[0m
+[32mINFO - NATIVE sw aligned: 1000 store in 112 us = 112 ns/store[0m
+[32mINFO - NATIVE misaligned sw: trying (a trap here means no hardware support)[0m
+[32mINFO - NATIVE sw misaligned: 1000 store in 126 us = 126 ns/store[0m
+[32mINFO - NATIVE misaligned sw: bytes correct (first [78, 56, 34, 12], last [78, 56, 34, 12])[0m
+[32mINFO - NATIVE uptime_host body (clock read + encode): 1000 call in 5380 us = 5380 ns/call[0m
+[32mINFO - NATIVE postcard decode of the Duration: 1000 call in 1411 us = 1411 ns/call[0m
+[32mINFO - NATIVE done (sink 8156879417849243431)[0m
+[32mINFO - [watchdog] armed: MWDT stage0 interrupt 30 s + stage1 reset 15 s; RWDT backstop 60 s[0m
+[32mINFO - Starting runtime handler[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 170102, crc: 1777421484, hash: [39, 118, 242, 49, 233, 144, 170, 47, 153, 49, 129, 201, 54, 199, 215, 245, 190, 223, 72, 23, 70, 200, 251, 30, 1, 39, 69, 225, 240, 96, 221, 13] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - start connection task[0m
+[32mINFO - Scan[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - Starting Cell task[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -51, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -57, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -49, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [80, 76], operating_class: AllEnvironments }) }[0m
+[32mINFO - About to connect...[0m
+[32mINFO - Wifi connected to ConnectedInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, authmode: Wpa2Personal, aid: 1 }[0m
+[32mINFO - Waiting to get IP address...[0m
+[32mINFO - Got IP: 172.20.10.2[0m
+[32mINFO - Scouting for Zenoh nodes...[0m
+[32mINFO - Discovered Zenoh node at tcp/172.20.10.3:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::1]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::3677:9c9f:f798:6657]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::583b:c88f:5963:dbb7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::64f1:87ff:fe55:c42c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::7da9:ac8f:2d12:e6b7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::8432:c3b7:b60:623c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b0be:83ff:fe18:e945]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b6d3:1a0a:f890:8d7c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::cbe:9927:4165:3992]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ce81:b1c:bd2c:69e]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ecda:1ce0:fe0d:d9ee]:57021[0m
+[32mINFO - Using Zenoh node at 172.20.10.3:57021 (hello from 172.20.10.3)[0m
+[32mINFO - Starting WASM request handler[0m
+[32mINFO - clock synced to swarm time (1792718738s since epoch)[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - Received new WASM module metadata: Metadata { magic: 1463897940, version: 2, len: 213600, crc: 4128518188, hash: [171, 90, 233, 144, 50, 174, 62, 233, 4, 36, 167, 168, 116, 168, 39, 196, 191, 14, 161, 132, 18, 131, 52, 149, 18, 175, 33, 157, 201, 238, 81, 80] }[0m
+[32mINFO - Starting WASM writer[0m
+[32mINFO - [db] Requesting WASM module...[0m
+[32mINFO - Stored new WASM module in Flash[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 213600, crc: 4128518188, hash: [171, 90, 233, 144, 50, 174, 62, 233, 4, 36, 167, 168, 116, 168, 39, 196, 191, 14, 161, 132, 18, 131, 52, 149, 18, 175, 33, 157, 201, 238, 81, 80] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("clock")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[32mINFO - module log: BENCH uptime (direct host call): 1000 call in 35202 us = 35202 ns/call[0m
+[32mINFO - module log: BENCH sum: 40960 word in 13229 us = 322 ns/word[0m
+[32mINFO - module log: BENCH scale: 40960 word in 19107 us = 466 ns/word[0m
+[32mINFO - module log: BENCH copy 4 KB: 200 KB in 2052 us = 10260 ns/KB[0m
+[32mINFO - module log: BENCH xorshift64: 10000 iter in 13012 us = 1301 ns/iter[0m
+[32mINFO - module log: BENCH tap::list_len (no handoff): 200 call in 1208 us = 6040 ns/call[0m
+[32mINFO - module log: BENCH gpio try_get (handoff): 200 call in 15055 us = 75275 ns/call[0m
+[32mINFO - module log: BENCH State::load (db): 10 call in 1252656 us = 125265600 ns/call[0m
+[32mINFO - module log: BENCH done (sink 8156879420830493079)[0m
+[32mINFO - WAMR runtime finished[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - Received new WASM module metadata: Metadata { magic: 1463897940, version: 2, len: 169264, crc: 1705067383, hash: [53, 122, 67, 113, 125, 97, 182, 59, 84, 95, 27, 230, 137, 203, 127, 154, 201, 83, 24, 135, 29, 25, 226, 117, 155, 225, 7, 2, 246, 52, 206, 96] }[0m
+[32mINFO - Starting WASM writer[0m
+[32mINFO - [db] Requesting WASM module...[0m
+[32mINFO - Stored new WASM module in Flash[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 169264, crc: 1705067383, hash: [53, 122, 67, 113, 125, 97, 182, 59, 84, 95, 27, 230, 137, 203, 127, 154, 201, 83, 24, 135, 29, 25, 226, 117, 155, 225, 7, 2, 246, 52, 206, 96] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("clock")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - module log: BENCH uptime (direct host call): 1000 call in 33224 us = 33224 ns/call[0m
+[32mINFO - module log: BENCH sum: 40960 word in 7842 us = 191 ns/word[0m
+[32mINFO - module log: BENCH scale: 40960 word in 10838 us = 264 ns/word[0m
+[32mINFO - module log: BENCH copy 4 KB: 200 KB in 11124 us = 55620 ns/KB[0m
+[32mINFO - module log: BENCH xorshift64: 10000 iter in 12952 us = 1295 ns/iter[0m
+[32mINFO - module log: BENCH tap::list_len (no handoff): 200 call in 1076 us = 5380 ns/call[0m
+[32mINFO - module log: BENCH gpio try_get (handoff): 200 call in 14918 us = 74590 ns/call[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - module log: BENCH State::load (db): 10 call in 4400581 us = 440058100 ns/call[0m
+[32mINFO - module log: BENCH done (sink 8156879420830493079)[0m
+[32mINFO - WAMR runtime finished[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33m[32mINFO - Disconnected: Some(DisconnectedInfo { ssid: "<redacted>", bssid: [<redacted>], reason: AuthenticationExpired, rssi: -50 })[0m
+[32mINFO - About to connect...[0m
+[31mERROR - Failed to connect to wifi: Failed(DisconnectedInfo { ssid: "<redacted>", bssid: [<redacted>], reason: NoAccessPointFound, rssi: -128 })[0m
+[32mINFO - About to connect...[0m
+[31mERROR - Failed to connect to wifi: Failed(DisconnectedInfo { ssid: "<redacted>", bssid: [<redacted>], reason: NoAccessPointFound, rssi: -128 })[0m
+ERROR /dev/cu.usbmodem1101 did not come back within 10s
+Caused by: No such file or directory

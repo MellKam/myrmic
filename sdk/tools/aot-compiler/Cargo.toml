@@ -13,7 +13,9 @@ clap    = { workspace = true, features = ["derive"] }
 owo-colors = { workspace = true }
 which   = { workspace = true }
 sha2 = { workspace = true }
+wasmparser = { workspace = true }
 # Local
+host-abi = { workspace = true }
 wasm-storage = { workspace = true }
 
 [lints]

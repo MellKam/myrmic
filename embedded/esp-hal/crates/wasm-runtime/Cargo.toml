@@ -52,4 +52,5 @@ wasm-runtime-macros = { workspace = true }
 wamr-rust-sdk       = { workspace = true, default-features = false, features = ["esp-hal", "aot", "xip"] }
 myrmic-sdk          = { workspace = true }
 wasm-storage        = { workspace = true }
+host-abi            = { workspace = true }
 esp-nimble-host     = { workspace = true, optional = true }

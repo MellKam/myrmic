@@ -1,0 +1,77 @@
+[package]
+name = "firmware"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[package.metadata.myrmic]
+firmware = "esp32"
+
+# Link-time optimization is required here, not merely an optimization. On the
+# BLE + PSRAM chips (C5/C61) the firmware otherwise boots into a watchdog reset
+# loop: the esp-mmu routine that maps the AOT flash region runs with the flash
+# cache disabled, and without cross-crate inlining some of its callees remain in
+# XIP flash, which cannot be fetched during that window. `thin` inlines them
+# while keeping build times reasonable. C6 does not need it, but it is harmless.
+[profile.release]
+lto = "thin"
+
+[features]
+default = ["esp32c6"]
+
+# Target SoC. A firmware crate declares its own chip feature and forwards it:
+# `esp_firmware::board!` and `esp_firmware_build::configure()` both read the
+# chip from the crate that invokes them.
+esp32c5  = ["esp-firmware/esp32c5", "ble"]
+esp32c6  = ["esp-firmware/esp32c6"]
+esp32c61 = ["esp-firmware/esp32c61", "ble"]
+
+ble = ["esp-firmware/ble"]
+
+[dependencies]
+esp-firmware = { git = "https://github.com/peeriot/myrmic.git", rev = "394b373b" }
+
+bench-kernels = { path = "../bench/kernels" }
+# Same postcard as the runtime and SDK, for the native side of the `uptime()` breakdown.
+postcard = { version = "1.1.3", default-features = false }
+
+[build-dependencies]
+esp-firmware-build = { git = "https://github.com/peeriot/myrmic.git", rev = "394b373b" }
+
+# Standalone: keeps cargo from attaching this crate to the myrmic repo workspace.
+[workspace]
+
+# Same Rust optimization level as a cell build (`myrmic build` passes -C opt-level=z),
+# so the native baseline runs the same loops compiled the same way.
+[profile.release.package.bench-kernels]
+opt-level = "z"
+
+# Timing experiment: the pinned commit checked out locally (../myrmic-394b373b) so the
+# runtime can carry timestamps. Remove this section to build from git again.
+[patch."https://github.com/peeriot/myrmic.git"]
+cell-db-service = { path = "../myrmic-394b373b/embedded/esp-hal/crates/cell-db-service" }
+cell-protocol = { path = "../myrmic-394b373b/swarm/cell-protocol" }
+db-client = { path = "../myrmic-394b373b/swarm/db-client" }
+db-commons = { path = "../myrmic-394b373b/swarm/db-commons" }
+esp-codegen = { path = "../myrmic-394b373b/sdk/signal-layer/esp-codegen" }
+esp-common = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-common" }
+esp-firmware = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-firmware" }
+esp-firmware-build = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-firmware-build" }
+esp-firmware-macros = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-firmware-macros" }
+esp-heap = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-heap" }
+esp-mmu = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-mmu" }
+esp-mmu-consts = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-mmu-consts" }
+esp-network = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-network" }
+esp-watchdog = { path = "../myrmic-394b373b/embedded/esp-hal/crates/esp-watchdog" }
+myrmic-common = { path = "../myrmic-394b373b/sdk/myrmic-common" }
+myrmic-sdk = { path = "../myrmic-394b373b/sdk/myrmic-sdk" }
+myrmic-sdk-macros = { path = "../myrmic-394b373b/sdk/myrmic-sdk-macros" }
+myrmic-signal-layer-types = { path = "../myrmic-394b373b/sdk/signal-layer/signal-layer-types" }
+myrmic-tags = { path = "../myrmic-394b373b/swarm/myrmic-tags" }
+pipeline-backend-api = { path = "../myrmic-394b373b/sdk/signal-layer/pipeline-backend-api" }
+pipeline-codegen = { path = "../myrmic-394b373b/sdk/signal-layer/pipeline-codegen" }
+signal-layer-core = { path = "../myrmic-394b373b/sdk/signal-layer/signal-layer-core" }
+wasm-runtime = { path = "../myrmic-394b373b/embedded/esp-hal/crates/wasm-runtime" }
+wasm-runtime-macros = { path = "../myrmic-394b373b/embedded/esp-hal/crates/wasm-runtime-macros" }
+wasm-storage = { path = "../myrmic-394b373b/embedded/esp-hal/crates/wasm-storage" }
+zenoh-nano = { path = "../myrmic-394b373b/swarm/zenoh-nano" }

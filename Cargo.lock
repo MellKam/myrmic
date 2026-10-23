@@ -232,9 +232,11 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "host-abi",
  "owo-colors",
  "sha2 0.10.9",
  "wasm-storage",
+ "wasmparser 0.260.0",
  "which",
 ]
 
@@ -5203,6 +5205,10 @@ checksum = "cc627f471c528ff0c4a49e1d5e60450c8f6461dd6d10ba9dcd3a61d3dff7728d"
 dependencies = [
  "windows-sys 0.61.2",
 ]
+
+[[package]]
+name = "host-abi"
+version = "0.7.1"
 
 [[package]]
 name = "http"
@@ -12236,6 +12242,7 @@ dependencies = [
  "esp-nimble-host",
  "esp-radio-rtos-driver",
  "heapless 0.9.3",
+ "host-abi",
  "log",
  "myrmic-common",
  "myrmic-sdk",
@@ -12311,8 +12318,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c94519d78304dc4a4bb5925eda6ff153bf06167467cff9233dc9593bae28fdd"
 dependencies = [
  "bitflags 2.13.2",
+ "hashbrown 0.17.1",
  "indexmap 2.14.2",
  "semver",
+ "serde",
 ]
 
 [[package]]

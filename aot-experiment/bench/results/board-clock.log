@@ -1,0 +1,202 @@
+INFO  Serial port: '/dev/cu.usbmodem1101'
+INFO  Connecting...
+INFO  Using flash stub
+ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0x15 (USB_UART_HPSYS),boot:0xc (SPI_FAST_FLASH_BOOT)
+Saved PC:0x40800826
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875730,len:0x1628
+load:0x4086b910,len:0xd9c
+load:0x4086e610,len:0x31e0
+entry 0x4086b91a
+I (23) boot: ESP-IDF v6.1-beta1-497-g14f663f003e 2nd stage bootloader
+I (24) boot: chip revision: v0.2
+I (24) boot: efuse block revision: v0.3
+I (24) boot.esp32c6: SPI Speed      : 80MHz
+I (28) boot.esp32c6: SPI Mode       : DIO
+I (32) boot.esp32c6: SPI Flash Size : 4MB
+I (35) boot: Enabling RNG early entropy source...
+I (40) boot: Partition Table:
+I (43) boot: ## Label            Usage          Type ST Offset   Length
+I (49) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (55) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (62) boot:  2 factory          factory app      00 00 00010000 002f0000
+I (69) boot: End of partition table
+I (72) esp_image: segment 0: paddr=00010020 vaddr=42000020 size=2d6c4h (186052) map
+I (115) esp_image: segment 1: paddr=0003d6ec vaddr=40800000 size=0292ch ( 10540) load
+I (118) esp_image: segment 2: paddr=00040020 vaddr=42030020 size=2135e8h (2176488) map
+I (533) esp_image: segment 3: paddr=00253610 vaddr=4080292c size=12f90h ( 77712) load
+I (551) esp_image: segment 4: paddr=002665a8 vaddr=408158c0 size=001e0h (   480) load
+I (556) boot: Loaded app from partition at offset 0x10000
+I (557) boot: Disabling RNG early entropy source...
+[32mINFO - [heap] boot layout: main 291 KiB + dram2 64 KiB + PSRAM 0 KiB = 355 KiB total (16 KiB stack reserved)[0m
+[32mINFO - Init![0m
+[32mINFO - NATIVE Instant::now: 1000 call in 1119 us = 1119 ns/call[0m
+[32mINFO - NATIVE sum: 40960 word in 2590 us = 63 ns/word[0m
+[32mINFO - NATIVE scale: 40960 word in 4121 us = 100 ns/word[0m
+[32mINFO - NATIVE copy 4 KB: 200 KB in 1782 us = 8910 ns/KB[0m
+[32mINFO - NATIVE ROM memcpy 4 KB: 200 KB in 1759 us = 8795 ns/KB[0m
+[32mINFO - NATIVE ROM memmove 4 KB: 200 KB in 17947 us = 89735 ns/KB[0m
+[32mINFO - NATIVE xorshift64: 10000 iter in 2643 us = 264 ns/iter[0m
+[32mINFO - NATIVE lw aligned: 1000 load in 124 us = 124 ns/load[0m
+[32mINFO - NATIVE byte-split load (WAMR today): 1000 load in 240 us = 240 ns/load[0m
+[32mINFO - NATIVE misaligned lw: trying (a trap here means no hardware support)[0m
+[32mINFO - NATIVE lw misaligned: 1000 load in 148 us = 148 ns/load[0m
+[32mINFO - NATIVE done (sink 8156879417849243431)[0m
+[32mINFO - [watchdog] armed: MWDT stage0 interrupt 30 s + stage1 reset 15 s; RWDT backstop 60 s[0m
+[32mINFO - Starting runtime handler[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 165336, crc: 643774591, hash: [9, 13, 88, 1, 3, 96, 146, 96, 144, 68, 12, 219, 199, 109, 125, 77, 3, 188, 139, 129, 94, 45, 67, 70, 143, 75, 179, 49, 145, 65, 95, 50] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - start connection task[0m
+[32mINFO - Scan[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - Starting Cell task[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -37, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -75, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [80, 76], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -50, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [80, 76], operating_class: AllEnvironments }) }[0m
+[32mINFO - About to connect...[0m
+[32mINFO - Wifi connected to ConnectedInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, authmode: Wpa2Personal, aid: 1 }[0m
+[32mINFO - Waiting to get IP address...[0m
+[32mINFO - Got IP: 172.20.10.2[0m
+[32mINFO - Scouting for Zenoh nodes...[0m
+[32mINFO - Discovered Zenoh node at tcp/172.20.10.3:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:1c09:4993:b4bc:ffc]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:d199:87ca:f95d:ab19]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::1]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::3677:9c9f:f798:6657]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::38e2:dbff:fe18:53b]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::583b:c88f:5963:dbb7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::7da9:ac8f:2d12:e6b7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::8432:c3b7:b60:623c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b0be:83ff:fe18:e945]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b6d3:1a0a:f890:8d7c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::cbe:9927:4165:3992]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ce81:b1c:bd2c:69e]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ecda:1ce0:fe0d:d9ee]:57021[0m
+[32mINFO - Using Zenoh node at 172.20.10.3:57021 (hello from 172.20.10.3)[0m
+[32mINFO - Starting WASM request handler[0m
+[33mWARN - Zenoh network connect failed: Transport(SessionNegoInvalidResponse), retrying in Duration { ticks: 2000000 }[0m
+[32mINFO - Got IP: 172.20.10.2[0m
+[32mINFO - Scouting for Zenoh nodes...[0m
+[32mINFO - Discovered Zenoh node at tcp/172.20.10.3:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:1c09:4993:b4bc:ffc]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:d199:87ca:f95d:ab19]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::1]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::3677:9c9f:f798:6657]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::38e2:dbff:fe18:53b]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::583b:c88f:5963:dbb7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::7da9:ac8f:2d12:e6b7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::8432:c3b7:b60:623c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b0be:83ff:fe18:e945]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b6d3:1a0a:f890:8d7c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::cbe:9927:4165:3992]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ce81:b1c:bd2c:69e]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ecda:1ce0:fe0d:d9ee]:57021[0m
+[32mINFO - Using Zenoh node at 172.20.10.3:57021 (hello from 172.20.10.3)[0m
+[32mINFO - clock synced to swarm time (1792714497s since epoch)[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - [sweep] releasing 'aeae46fb-1a16-5310-8f2b-7be02338b588' from a previous boot[0m
+[32mINFO - [fencing] released rows for 'aeae46fb-1a16-5310-8f2b-7be02338b588'[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - Received new WASM module metadata: Metadata { magic: 1463897940, version: 2, len: 216704, crc: 3534293889, hash: [33, 144, 44, 69, 175, 250, 222, 180, 195, 246, 136, 160, 157, 108, 92, 78, 223, 203, 129, 59, 86, 230, 239, 88, 33, 62, 76, 174, 46, 239, 183, 180] }[0m
+[32mINFO - Starting WASM writer[0m
+[32mINFO - [db] Requesting WASM module...[0m
+[32mINFO - Stored new WASM module in Flash[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 216704, crc: 3534293889, hash: [33, 144, 44, 69, 175, 250, 222, 180, 195, 246, 136, 160, 157, 108, 92, 78, 223, 203, 129, 59, 86, 230, 239, 88, 33, 62, 76, 174, 46, 239, 183, 180] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("clock")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[32mINFO - module log: BENCH clock: tap::list_len (reference): 1000 call in 7411 us = 7411 ns/call[0m
+[32mINFO - module log: BENCH clock: raw uptime_host import: 1000 call in 15443 us = 15443 ns/call[0m
+[32mINFO - module log: BENCH clock: postcard decode of the Duration: 1000 call in 20193 us = 20193 ns/call[0m
+[32mINFO - module log: BENCH clock: myrmic_sdk::uptime(): 1000 call in 36478 us = 36478 ns/call[0m
+[32mINFO - module log: BENCH clock: Duration::as_micros() as u64 (u128 math): 1000 call in 2229 us = 2229 ns/call[0m
+[32mINFO - module log: BENCH clock: as_secs*1e6 + subsec_micros (u64 math): 1000 call in 2292 us = 2292 ns/call[0m
+[32mINFO - module log: BENCH clock done[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - WAMR runtime finished[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - WASM module is already stored on device.[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 216704, crc: 3534293889, hash: [33, 144, 44, 69, 175, 250, 222, 180, 195, 246, 136, 160, 157, 108, 92, 78, 223, 203, 129, 59, 86, 230, 239, 88, 33, 62, 76, 174, 46, 239, 183, 180] }[0m
+[32mINFO - [db] WASM module already stored, skipping transfer[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("clock")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[32mINFO - module log: BENCH clock: tap::list_len (reference): 1000 call in 8072 us = 8072 ns/call[0m
+[32mINFO - module log: BENCH clock: raw uptime_host import: 1000 call in 13990 us = 13990 ns/call[0m
+[32mINFO - module log: BENCH clock: postcard decode of the Duration: 1000 call in 18325 us = 18325 ns/call[0m
+[32mINFO - module log: BENCH clock: myrmic_sdk::uptime(): 1000 call in 35923 us = 35923 ns/call[0m
+[32mINFO - module log: BENCH clock: Duration::as_micros() as u64 (u128 math): 1000 call in 2230 us = 2230 ns/call[0m
+[32mINFO - module log: BENCH clock: as_secs*1e6 + subsec_micros (u64 math): 1000 call in 2299 us = 2299 ns/call[0m
+[32mINFO - module log: BENCH clock done[0m
+[32mINFO - WAMR runtime finished[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - Received new WASM module metadata: Metadata { magic: 1463897940, version: 2, len: 169264, crc: 1705067383, hash: [53, 122, 67, 113, 125, 97, 182, 59, 84, 95, 27, 230, 137, 203, 127, 154, 201, 83, 24, 135, 29, 25, 226, 117, 155, 225, 7, 2, 246, 52, 206, 96] }[0m
+[32mINFO - Starting WASM writer[0m
+[32mINFO - [db] Requesting WASM module...[0m
+[32mINFO - Stored new WASM module in Flash[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 169264, crc: 1705067383, hash: [53, 122, 67, 113, 125, 97, 182, 59, 84, 95, 27, 230, 137, 203, 127, 154, 201, 83, 24, 135, 29, 25, 226, 117, 155, 225, 7, 2, 246, 52, 206, 96] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("clock")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[32mINFO - module log: BENCH clock: tap::list_len (reference): 1000 call in 7219 us = 7219 ns/call[0m
+[32mINFO - module log: BENCH clock: raw uptime_host import: 1000 call in 13828 us = 13828 ns/call[0m
+[32mINFO - module log: BENCH clock: postcard decode of the Duration: 1000 call in 16622 us = 16622 ns/call[0m
+[32mINFO - module log: BENCH clock: myrmic_sdk::uptime(): 1000 call in 32159 us = 32159 ns/call[0m
+[32mINFO - module log: BENCH clock: Duration::as_micros() as u64 (u128 math): 1000 call in 1360 us = 1360 ns/call[0m
+[32mINFO - module log: BENCH clock: as_secs*1e6 + subsec_micros (u64 math): 1000 call in 1383 us = 1383 ns/call[0m
+[32mINFO - module log: BENCH clock done[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m

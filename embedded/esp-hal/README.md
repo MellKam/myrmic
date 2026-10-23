@@ -89,11 +89,22 @@ It automatically passes `--xip` and the correct `--cpu-features` for the selecte
 
 The flags it encodes per target are:
 
-| SoC       | `--cpu-features` | `cargo` target                                             |
-|-----------|-----------------|------------------------------------------------------------|
-| ESP32-C5  | `+i,+m,+a,+c`   | `--target riscv32imac-unknown-none-elf --features esp32c5` |
-| ESP32-C6  | `+i,+m,+a,+c`   | `--target riscv32imac-unknown-none-elf --features esp32c6` |
-| ESP32-C61 | `+i,+m,+a,+c`   | `--target riscv32imac-unknown-none-elf --features esp32c61`|
+| SoC       | `--cpu-features`                | `cargo` target                                             |
+|-----------|---------------------------------|------------------------------------------------------------|
+| ESP32-C5  | `+i,+m,+a,+c`                   | `--target riscv32imac-unknown-none-elf --features esp32c5` |
+| ESP32-C6  | `+i,+m,+a,+c,+unaligned-scalar-mem` | `--target riscv32imac-unknown-none-elf --features esp32c6` |
+| ESP32-C61 | `+i,+m,+a,+c`                   | `--target riscv32imac-unknown-none-elf --features esp32c61`|
+
+`+unaligned-scalar-mem` makes wasm loads and stores compile to single word accesses instead of
+byte-by-byte sequences. It is enabled on the ESP32-C6, which handles misaligned access in
+hardware; the C5 and C61 have not been checked yet (see the TODO in the aot-compiler).
+
+Setting `MYRMIC_AOT_HOST_SIGNATURES=1` makes the aot-compiler hand `wamrc` the signatures of the
+firmware's host functions (the `host-abi` crate, which the firmware checks its own declarations
+against at compile time), so a cell's calls into the firmware compile to direct calls instead of
+WAMR's generic dispatch. It is off by default: the `.aot` file does not record the signatures, so
+such a cell must run on a firmware built from the same sources. It needs a C compiler (`$CC` or
+`cc`) to build the small libraries `wamrc --native-lib` loads.
 
 ### Tuning the firmware / AOT flash split
 

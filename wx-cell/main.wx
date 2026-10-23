@@ -1,0 +1,132 @@
+// A Myrmic cell written in WX: no Rust, no SDK, just the raw wasm contract the runtime expects.
+
+// Severity of a log line, mirroring `myrmic_sdk::logging::LogLevel` (sent to the host as 0..=4).
+enum LogLevel: u8 {
+    Trace = 0,
+    Debug,
+    Info,
+    Warn,
+    Error,
+}
+
+enum Status: i32 {
+    Success = 0,
+    NotPermitted = -1, // EPERM
+    NotFound = -2, // ENOENT
+    TryAgain = -11, // EAGAIN
+    BufferTooSmall = -12, // ENOMEM
+    PermissionDenied = -13, // EACCES
+    InvalidArgument = -22, // EINVAL
+    TimedOut = -110, // ETIMEDOUT
+    StaleHandle = -116, // ESTALE
+    GenericError = -2147483648, // i32::MIN means generic error
+}
+
+// Host functions the Myrmic runtime provides, imported by module + name.
+// A `&[u8]` lowers to (ptr: i32, len: i32), which is what the host expects.
+import "logging" as logging {
+    // Success, or GenericError if `msg` is not valid UTF-8.
+    fn log_host(msg: heap::&[u8], level: LogLevel) -> Status;
+}
+
+import "arguments" as arguments {
+    // Copies the message payload (JSON by default) into `buffer`.
+    // Returns the number of bytes written, or GenericError if `max_len` is too small.
+    // The payload can be taken only once per call.
+    fn get_arguments(buffer: heap::*u8, max_len: i32) -> i32;
+}
+
+// Logs `msg` at `level`. Any failure is a bug in the cell, so it traps for now.
+fn log(level: LogLevel, msg: heap::&[u8]) {
+    if logging::log_host(msg, level) != Status::Success { unreachable }
+}
+
+// The runtime reads strings and arguments from the cell's exported "memory".
+#[memory_limits(min_pages = 1)]
+memory heap: Memory where { Size = u32 };
+
+global mut pings: i32 = 0;
+
+struct Uuid {
+    hi: u64,
+    lo: u64,
+}
+
+impl Uuid {
+    fn is_nil(self) -> bool {
+        self.hi == 0 && self.lo == 0
+    }
+
+    #[inline]
+    fn nibble(self, i: u32) -> u32 {
+        local half = if i < 16 { self.hi } else { self.lo };
+        local shift = 60 - 4 * (i % 16);
+        i32_wrap_i64(((half >> u64_extend_u32(shift)) & 0xF) as i64) as u32
+    }
+
+    // Writes the 36-char "8-4-4-4-12" form into `out`, which must have room for 36 bytes.
+    fn write_hex(self, out: heap::*[u8]) {
+        local digits = "0123456789abcdef";
+        local mut i: u32 = 0; // which hex digit
+        local mut pos: u32 = 0; // where in `out`
+        loop {
+            if i == 32 { break };
+            if i == 8 || i == 12 || i == 16 || i == 20 {
+                out[pos] = '-' as u8;
+                pos += 1;
+            }
+            out[pos] = digits[self.nibble(i)];
+            pos += 1;
+            i += 1;
+        };
+    }
+}
+
+// Every handler gets the same five parameters:
+//   (id_hi, id_lo)         this cell's identity (a UUID split into two i64s)
+//   (sender_hi, sender_lo) who sent the message (all zero for `myrmic send`)
+//   arg_len                size of the payload, fetched with `arguments.get_arguments`
+// Return 0 for success, anything else for an error.
+
+// Runs once when the cell is deployed.
+fn init_cell(id: Uuid, sender_id: Uuid, arg_len: i32) -> i32 {
+    log(LogLevel::Info, "hello from a WX cell!");
+    0
+}
+
+// `myrmic send <cell> ping` calls the export named "command_ping".
+fn command_ping(id: Uuid, sender_id: Uuid, arg_len: i32) -> i32 {
+    pings = pings + 1;
+    log(LogLevel::Info, "WX cell got a ping");
+
+    if sender_id.is_nil() {
+        log(LogLevel::Info, "ping from the CLI (nil sender)");
+    } else {
+        local buf = std::slice_from_parts(heap::DATA_END, 36) as heap::*[u8];
+        sender_id.write_hex(buf);
+        log(LogLevel::Info, buf);
+    }
+
+    0
+}
+
+// `myrmic send <cell> echo '{"x": 1}'` logs the payload it received, as-is.
+fn command_echo(id: Uuid, sender_id: Uuid, arg_len: i32) -> i32 {
+    // Free memory starts right after the string literals. No size check yet:
+    // a payload bigger than the rest of the page would not fit.
+    local buf = heap::DATA_END;
+    local n = arguments::get_arguments(buf, arg_len);
+    if n < 0 {
+        return n;
+    }
+    local payload = std::slice_from_parts::<heap, u8>(buf, n as u32);
+    log(LogLevel::Info, payload);
+    0
+}
+
+export {
+    init_cell as "init_cell",
+    command_ping as "command_ping",
+    command_echo as "command_echo",
+    heap as "memory",
+}

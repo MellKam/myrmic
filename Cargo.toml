@@ -45,6 +45,7 @@ members = [
     "tests/fixtures/*",
     "embedded/esp-hal/crates/wasm-runtime",
     "embedded/esp-hal/crates/wasm-runtime-macros",
+    "embedded/esp-hal/crates/host-abi",
     "embedded/esp-hal/crates/wasm-storage",
     "embedded/esp-hal/crates/esp-mmu",
     "embedded/esp-hal/crates/cell-db-service",
@@ -447,6 +448,7 @@ libc = "0.2.186"
 
 tryhard = "0.5.2"
 wasmtime = "49.0.4"
+wasmparser = "0.260.0"
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
@@ -577,6 +579,7 @@ myrmic-sdk = { path = "sdk/myrmic-sdk" }
 myrmic-sdk-macros = { path = "sdk/myrmic-sdk-macros", version = "0.7.1" }
 wasm-runtime-macros = { path = "embedded/esp-hal/crates/wasm-runtime-macros" }
 wasm-runtime = { path = "embedded/esp-hal/crates/wasm-runtime" }
+host-abi = { path = "embedded/esp-hal/crates/host-abi" }
 wasm-storage = { path = "embedded/esp-hal/crates/wasm-storage", default-features = false }
 module-examples-common = { path = "tests/fixtures/module-examples-common" }
 

@@ -37,9 +37,20 @@ macro_rules! tri {
 ///     // Do something
 /// }
 /// ```
+///
+/// The name and signature must match the entry in the `host-abi` table, which host tools read
+/// to compile calls to these functions; a mismatch is a compile error.
 #[macro_export]
 macro_rules! host_function_decl {
-    ($name:expr, $sig:literal) => {
+    ($name:expr, $sig:literal) => {{
+        const _: () = assert!(
+            host_abi::matches(stringify!($name), $sig.to_bytes()),
+            concat!(
+                "host function `",
+                stringify!($name),
+                "` is missing from the host-abi table or listed there with a different signature"
+            )
+        );
         paste::paste! {
             wamr_rust_sdk::sys::NativeSymbol {
                 // we want this to live as long as everything lives
@@ -49,5 +60,5 @@ macro_rules! host_function_decl {
                 attachment: core::ptr::null_mut(),
             }
         }
-    };
+    }};
 }

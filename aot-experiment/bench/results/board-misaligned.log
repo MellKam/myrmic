@@ -1,0 +1,153 @@
+INFO  Serial port: '/dev/cu.usbmodem1101'
+INFO  Connecting...
+INFO  Using flash stub
+Chip type:         esp32c6 (revision v0.2)
+Crystal frequency: 40 MHz
+Flash size:        4MB
+Features:          WiFi 6, BT 5
+MAC address:       9c:cc:01:33:a1:60
+INFO  Building firmware: /Users/melkam/Desktop/myrmic/aot-experiment/firmware/Cargo.toml
+warning: firmware@0.1.0: BLE is disabled by default for the ESP32-C6. If you wish to enable it, please use '--features ble' during compilation.
+   Compiling firmware v0.1.0 (/Users/melkam/Desktop/myrmic/aot-experiment/firmware)
+    Finished `release` profile [optimized] target(s) in 7.81s
+INFO  Flashing /Users/melkam/Desktop/myrmic/aot-experiment/firmware/target/riscv32imac-unknown-none-elf/release/firmware...
+App/part. size:    2,451,376/3,080,192 bytes, 79.59%
+INFO  Flashed; the board is booting
+INFO  Monitoring /dev/cu.usbmodem1101 (Ctrl-C to stop)
+I (533) esp_image: segment 3: paddr=00253610 vaddr=4080292c size=12f90h ( 77712) load
+I (551) esp_image: segment 4: paddr=002665a8 vaddr=408158c0 size=001e0h (   480) load
+I (556) boot: Loaded app from partition at offset 0x10000
+I (557) boot: Disabling RNG early entropy source...
+[32mINFO - [heap] boot layout: main 291 KiB + dram2 64 KiB + PSRAM 0 KiB = 355 KiB total (16 KiB stack reserved)[0m
+[32mINFO - Init![0m
+[32mINFO - NATIVE Instant::now: 1000 call in 1119 us = 1119 ns/call[0m
+[32mINFO - NATIVE sum: 40960 word in 2591 us = 63 ns/word[0m
+[32mINFO - NATIVE scale: 40960 word in 4121 us = 100 ns/word[0m
+[32mINFO - NATIVE copy 4 KB: 200 KB in 1782 us = 8910 ns/KB[0m
+[32mINFO - NATIVE ROM memcpy 4 KB: 200 KB in 1759 us = 8795 ns/KB[0m
+[32mINFO - NATIVE ROM memmove 4 KB: 200 KB in 17948 us = 89740 ns/KB[0m
+[32mINFO - NATIVE xorshift64: 10000 iter in 2643 us = 264 ns/iter[0m
+[32mINFO - NATIVE lw aligned: 1000 load in 125 us = 125 ns/load[0m
+[32mINFO - NATIVE byte-split load (WAMR today): 1000 load in 240 us = 240 ns/load[0m
+[32mINFO - NATIVE misaligned lw: trying (a trap here means no hardware support)[0m
+[32mINFO - NATIVE lw misaligned: 1000 load in 147 us = 147 ns/load[0m
+[32mINFO - NATIVE done (sink 8156879417849243431)[0m
+[32mINFO - [watchdog] armed: MWDT stage0 interrupt 30 s + stage1 reset 15 s; RWDT backstop 60 s[0m
+[32mINFO - Starting runtime handler[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 210924, crc: 4098230686, hash: [110, 222, 105, 167, 193, 238, 11, 170, 8, 228, 64, 125, 163, 133, 220, 114, 135, 122, 51, 149, 116, 54, 221, 35, 85, 30, 169, 175, 14, 14, 56, 251] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - start connection task[0m
+[32mINFO - Scan[0m
+[32mINFO - Waiting for new incoming module[0m
+[32mINFO - Starting Cell task[0m
+[32mINFO - [WAMR] Waiting for WASM module[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -91, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -50, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 1, secondary_channel: None, signal_strength: -63, auth_method: Some(WpaWpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 3, secondary_channel: Above, signal_strength: -91, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [0, 0], operating_class: Repr(0) }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -94, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [68, 69], operating_class: Repr(4) }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, secondary_channel: None, signal_strength: -47, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [80, 76], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 11, secondary_channel: None, signal_strength: -86, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [69, 85], operating_class: AllEnvironments }) }[0m
+[32mINFO - AccessPointInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 11, secondary_channel: None, signal_strength: -97, auth_method: Some(Wpa2Personal), country: Some(CountryInfo { country: [65, 84], operating_class: Repr(4) }) }[0m
+[32mINFO - About to connect...[0m
+[32mINFO - Wifi connected to ConnectedInfo { ssid: "<redacted>", bssid: [<redacted>], channel: 6, authmode: Wpa2Personal, aid: 1 }[0m
+[32mINFO - Waiting to get IP address...[0m
+[32mINFO - Got IP: 172.20.10.2[0m
+[32mINFO - Scouting for Zenoh nodes...[0m
+[32mINFO - Discovered Zenoh node at tcp/172.20.10.3:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:1c09:4993:b4bc:ffc]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:d199:87ca:f95d:ab19]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::1]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::3677:9c9f:f798:6657]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::38e2:dbff:fe18:53b]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::583b:c88f:5963:dbb7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::7da9:ac8f:2d12:e6b7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::8432:c3b7:b60:623c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b0be:83ff:fe18:e945]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b6d3:1a0a:f890:8d7c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::cbe:9927:4165:3992]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ce81:b1c:bd2c:69e]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ecda:1ce0:fe0d:d9ee]:57021[0m
+[32mINFO - Using Zenoh node at 172.20.10.3:57021 (hello from 172.20.10.3)[0m
+[32mINFO - Starting WASM request handler[0m
+[33mWARN - Zenoh network connect failed: Transport(SessionNegoInvalidResponse), retrying in Duration { ticks: 2000000 }[0m
+[32mINFO - Got IP: 172.20.10.2[0m
+[32mINFO - Scouting for Zenoh nodes...[0m
+[32mINFO - Discovered Zenoh node at tcp/172.20.10.3:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:1c09:4993:b4bc:ffc]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[2a00:f43:5005:4a58:d199:87ca:f95d:ab19]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::1]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::3677:9c9f:f798:6657]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::38e2:dbff:fe18:53b]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::583b:c88f:5963:dbb7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::7da9:ac8f:2d12:e6b7]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::8432:c3b7:b60:623c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b0be:83ff:fe18:e945]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::b6d3:1a0a:f890:8d7c]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::cbe:9927:4165:3992]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ce81:b1c:bd2c:69e]:57021[0m
+[32mINFO - Discovered Zenoh node at tcp/[fe80::ecda:1ce0:fe0d:d9ee]:57021[0m
+[32mINFO - Using Zenoh node at 172.20.10.3:57021 (hello from 172.20.10.3)[0m
+[32mINFO - clock synced to swarm time (1792713543s since epoch)[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - [sweep] releasing '26a473c7-1e7f-5b45-bcea-9318daef82e3' from a previous boot[0m
+[32mINFO - [fencing] released rows for '26a473c7-1e7f-5b45-bcea-9318daef82e3'[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - [db] Requesting WASM metadata...[0m
+[32mINFO - Received new WASM module metadata: Metadata { magic: 1463897940, version: 2, len: 165336, crc: 643774591, hash: [9, 13, 88, 1, 3, 96, 146, 96, 144, 68, 12, 219, 199, 109, 125, 77, 3, 188, 139, 129, 94, 45, 67, 70, 143, 75, 179, 49, 145, 65, 95, 50] }[0m
+[32mINFO - Starting WASM writer[0m
+[32mINFO - [db] Requesting WASM module...[0m
+[32mINFO - Stored new WASM module in Flash[0m
+[32mINFO - Loading WASM module from storage[0m
+[32mINFO - Found WASM Module metadata: Metadata { magic: 1463897940, version: 2, len: 165336, crc: 643774591, hash: [9, 13, 88, 1, 3, 96, 146, 96, 144, 68, 12, 219, 199, 109, 125, 77, 3, 188, 139, 129, 94, 45, 67, 70, 143, 75, 179, 49, 145, 65, 95, 50] }[0m
+[32mINFO - WASM metadata valid[0m
+[32mINFO - WASM module found. Loading into WAMR...[0m
+[32mINFO - [WAMR] Initializing runtime[0m
+[32mINFO - WAMR engine initialized[0m
+[32mINFO - [wasm] 5 symbol(s) registered for module 'outlet'[0m
+[32mINFO - [wasm] 7 symbol(s) registered for module 'tap'[0m
+[32mINFO - WASM Module loaded[0m
+[32mINFO - WASM Module instantiated[0m
+[32mINFO - about to call 'init_allocator' function[0m
+[32mINFO - Found command: Command("bench")[0m
+[32mINFO - Found command: Command("on_tick")[0m
+[32mINFO - Found command: Command("tick_report")[0m
+[32mINFO - Found command: Command("tick_start")[0m
+[32mINFO - Running WASM module without 'init_cell'.[0m
+[32mINFO - Registering the Cell[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - module log: BENCH uptime (direct host call): 1000 call in 32562 us = 32562 ns/call[0m
+[32mINFO - module log: BENCH sum: 40960 word in 7823 us = 190 ns/word[0m
+[32mINFO - module log: BENCH scale: 40960 word in 10839 us = 264 ns/word[0m
+[32mINFO - module log: BENCH copy 4 KB: 200 KB in 11125 us = 55625 ns/KB[0m
+[32mINFO - module log: BENCH xorshift64: 10000 iter in 12956 us = 1295 ns/iter[0m
+[32mINFO - module log: BENCH tap::list_len (no handoff): 200 call in 879 us = 4395 ns/call[0m
+[32mINFO - module log: BENCH gpio try_get (handoff): 200 call in 15150 us = 75750 ns/call[0m
+[32mINFO - module log: BENCH State::load (db): 10 call in 252126 us = 25212600 ns/call[0m
+[32mINFO - module log: BENCH done (sink 8156879420830493079)[0m
+[32mINFO - module log: BENCH uptime (direct host call): 1000 call in 31029 us = 31029 ns/call[0m
+[32mINFO - module log: BENCH sum: 40960 word in 7972 us = 194 ns/word[0m
+[32mINFO - module log: BENCH scale: 40960 word in 10848 us = 264 ns/word[0m
+[32mINFO - module log: BENCH copy 4 KB: 200 KB in 11127 us = 55635 ns/KB[0m
+[32mINFO - module log: BENCH xorshift64: 10000 iter in 12959 us = 1295 ns/iter[0m
+[32mINFO - module log: BENCH tap::list_len (no handoff): 200 call in 882 us = 4410 ns/call[0m
+[32mINFO - module log: BENCH gpio try_get (handoff): 200 call in 15148 us = 75740 ns/call[0m
+[32mINFO - module log: BENCH State::load (db): 10 call in 244226 us = 24422600 ns/call[0m
+[32mINFO - module log: BENCH done (sink 8156879420830493079)[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[33mWARN - locate: timed out after 500ms with no response[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m
+[32mINFO - Registering exec runtime with info: ExecRuntimeInfo { id: RuntimeId(796d60a13301cc9c), name: Some("ESP32-C6"), capabilities: ExecutionCapabilities { tags: [CapabilityTag("esp32c6"), CapabilityTag("esp32"), CapabilityTag("riscv32imac"), CapabilityTag("embedded"), CapabilityTag("wifi-myrmic"), CapabilityTag("gpio"), CapabilityTag("@796d60a13301cc9c")] } }[0m

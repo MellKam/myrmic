@@ -1,0 +1,271 @@
+diff --git a/embedded/esp-hal/crates/wasm-runtime/src/async_request/mod.rs b/embedded/esp-hal/crates/wasm-runtime/src/async_request/mod.rs
+index 2caf815..207e28a 100644
+--- a/embedded/esp-hal/crates/wasm-runtime/src/async_request/mod.rs
++++ b/embedded/esp-hal/crates/wasm-runtime/src/async_request/mod.rs
+@@ -210,9 +210,12 @@ pub async fn request_handler(
+ 
+         // Wait for next request
+         let next_request = ASYNC_REQUEST.wait().await;
++        crate::probe::add(crate::probe::DISPATCH, crate::probe::SIGNALLED_AT.load(Ordering::Relaxed));
+ 
+         // Execute the request asynchronously and await its response
++        let t = crate::probe::now();
+         let resp = next_request.execute(&mut ctx).await;
++        crate::probe::add(crate::probe::EXEC, t);
+         // Reset so that we can use the signal for the next operation
+         ASYNC_REQUEST.reset();
+ 
+@@ -220,6 +223,7 @@ pub async fn request_handler(
+         let boxed = Box::new(resp);
+         let ptr: *mut Response = Box::into_raw(boxed);
+         // safety: We made sure that the queue size was initialized with size_of::<*mut Response>
++        crate::probe::REPLIED_AT.store(crate::probe::now(), Ordering::Relaxed);
+         unsafe {
+             response_queue.send_to_back((&raw const ptr).cast(), None);
+         }
+@@ -228,6 +232,8 @@ pub async fn request_handler(
+ 
+ fn send_request(request: Request) -> Response {
+     // Send the request
++    let t_handoff = crate::probe::now();
++    crate::probe::SIGNALLED_AT.store(t_handoff, Ordering::Relaxed);
+     ASYNC_REQUEST.signal(request);
+ 
+     loop {
+@@ -251,6 +257,8 @@ fn send_request(request: Request) -> Response {
+             let ptr = unsafe { ptr_out.assume_init() };
+             // safety: We own the Box now and there's no other pathway that takes ownership of this object
+             let resp = unsafe { Box::from_raw(ptr) };
++            crate::probe::add(crate::probe::REPLY, crate::probe::REPLIED_AT.load(Ordering::Relaxed));
++            crate::probe::add(crate::probe::HANDOFF, t_handoff);
+ 
+             break *resp;
+         }
+diff --git a/embedded/esp-hal/crates/wasm-runtime/src/async_request/timers.rs b/embedded/esp-hal/crates/wasm-runtime/src/async_request/timers.rs
+index aea466e..6fb326b 100644
+--- a/embedded/esp-hal/crates/wasm-runtime/src/async_request/timers.rs
++++ b/embedded/esp-hal/crates/wasm-runtime/src/async_request/timers.rs
+@@ -313,6 +313,7 @@ fn send_tick(export_name: &heapless::String<64>, completed: Option<TimerCompleti
+     // channel full and starve the db service's command hand-over.
+     if CELL_MSG_CHANNEL.free_capacity() <= 1 || CELL_MSG_CHANNEL.try_send(msg).is_err() {
+         log::debug!("timer tick dropped — cell message channel full");
++        crate::probe::DROPPED.fetch_add(1, portable_atomic::Ordering::Relaxed);
+         false
+     } else {
+         true
+diff --git a/embedded/esp-hal/crates/wasm-runtime/src/lib.rs b/embedded/esp-hal/crates/wasm-runtime/src/lib.rs
+index 5ab30f6..cb4547f 100644
+--- a/embedded/esp-hal/crates/wasm-runtime/src/lib.rs
++++ b/embedded/esp-hal/crates/wasm-runtime/src/lib.rs
+@@ -21,6 +21,7 @@ mod exports;
+ mod imports;
+ mod linking;
+ mod service;
++pub mod probe;
+ 
+ pub use service::{
+     TransferReply, WasmTransfer, cell_pump, from_thread_arg, into_thread_arg, runtime_handler,
+@@ -395,7 +396,12 @@ impl<'buf> WamrRuntime<'buf> {
+     pub fn handle_timer_tick(&self, export_name: &str) -> Result<(), Error> {
+         // The export name is used to actually call the command, so needs to be expanded first
+         let expanded_name = format!("command_{export_name}");
+-        let args = Self::handler_args(None, Some(send_request_and_wait(CellHost::GetSri)));
++        let t = probe::now();
++        let sender = send_request_and_wait(CellHost::GetSri);
++        probe::add(probe::SRI1, t);
++        let t = probe::now();
++        let args = Self::handler_args(None, Some(sender));
++        probe::add(probe::ARGS, t);
+ 
+         self.call_in_transaction(&expanded_name, &args, None)
+             .map_err(|exception| Error::GuestFunctionException {
+@@ -439,9 +445,13 @@ impl<'buf> WamrRuntime<'buf> {
+         args: &Vec<WasmValue>,
+         mailbox_entry: Option<&Id>,
+     ) -> Result<(), String> {
++        let t = probe::now();
+         open_application(scope_of_cell(send_request_and_wait(CellHost::GetSri)));
++        probe::add(probe::OPEN, t);
+ 
++        let t = probe::now();
+         let mut result = self.run_export(export, args);
++        probe::add(probe::RUN, t);
+ 
+         if let (Ok(()), Some(msg_id)) = (&result, mailbox_entry) {
+             // Fails the call rather than committing without it: a turn that
+@@ -451,8 +461,11 @@ impl<'buf> WamrRuntime<'buf> {
+         }
+ 
+         let Err(err) = result else {
+-            return commit_application()
++            let t = probe::now();
++            let committed = commit_application()
+                 .map_err(|err| format!("failed to commit the transaction of '{export}': {err}"));
++            probe::add(probe::COMMIT, t);
++            return committed;
+         };
+ 
+         rollback_application();
+diff --git a/embedded/esp-hal/crates/wasm-runtime/src/probe.rs b/embedded/esp-hal/crates/wasm-runtime/src/probe.rs
+new file mode 100644
+index 0000000..268cfd9
+--- /dev/null
++++ b/embedded/esp-hal/crates/wasm-runtime/src/probe.rs
+@@ -0,0 +1,67 @@
++//! Timing experiment (aot-experiment): per-phase durations along the timer-tick path,
++//! summed in atomics and logged once every `EVERY` ticks so logging doesn't skew them.
++
++use embassy_time::Instant;
++use portable_atomic::{AtomicU32, Ordering};
++
++pub const WAIT: usize = 0; // WAMR thread blocked waiting for the next cell message
++pub const SRI1: usize = 1; // handle_timer_tick: GetSri
++pub const ARGS: usize = 2; // handler_args: StoreArguments + GetSri
++pub const OPEN: usize = 3; // call_in_transaction: GetSri + DbClient::Open
++pub const RUN: usize = 4; // run_export (the wasm call itself)
++pub const COMMIT: usize = 5; // DbClient::Commit
++pub const TICK: usize = 6; // whole tick, message received to handler done
++pub const HANDOFF: usize = 7; // every send_request_and_wait, as seen from the WAMR thread
++pub const DISPATCH: usize = 8; // ASYNC_REQUEST.signal -> executor starts executing it
++pub const EXEC: usize = 9; // executor: Request::execute
++pub const REPLY: usize = 10; // executor queued the response -> WAMR thread has it
++pub const PUMP: usize = 11; // cell_pump blocked in send_to_back
++pub const HOST: usize = 12; // wasm -> host import calls (sum over the tick)
++const N: usize = 13;
++const NAMES: [&str; N] = [
++    "wait", "getsri", "args", "open", "run", "commit", "tick", "handoff", "dispatch", "exec",
++    "reply", "pump", "host",
++];
++const EVERY: u32 = 50;
++
++static SUM: [AtomicU32; N] = [const { AtomicU32::new(0) }; N];
++static CNT: [AtomicU32; N] = [const { AtomicU32::new(0) }; N];
++static MAX: [AtomicU32; N] = [const { AtomicU32::new(0) }; N];
++static TICKS: AtomicU32 = AtomicU32::new(0);
++pub static DROPPED: AtomicU32 = AtomicU32::new(0);
++/// Timestamps handed between threads (low 32 bits of µs uptime).
++pub static SIGNALLED_AT: AtomicU32 = AtomicU32::new(0);
++pub static REPLIED_AT: AtomicU32 = AtomicU32::new(0);
++
++#[inline]
++pub fn now() -> u32 {
++    Instant::now().as_micros() as u32
++}
++
++#[inline]
++pub fn add(phase: usize, since: u32) {
++    let us = now().wrapping_sub(since);
++    SUM[phase].fetch_add(us, Ordering::Relaxed);
++    CNT[phase].fetch_add(1, Ordering::Relaxed);
++    MAX[phase].fetch_max(us, Ordering::Relaxed);
++}
++
++/// Called once per finished tick; every `EVERY` ticks logs avg/max/count per phase and resets.
++pub fn tick_done() {
++    if TICKS.fetch_add(1, Ordering::Relaxed) + 1 < EVERY {
++        return;
++    }
++    TICKS.store(0, Ordering::Relaxed);
++    let mut line = alloc::string::String::new();
++    for i in 0..N {
++        let c = CNT[i].swap(0, Ordering::Relaxed);
++        let s = SUM[i].swap(0, Ordering::Relaxed);
++        let m = MAX[i].swap(0, Ordering::Relaxed);
++        if c > 0 {
++            use core::fmt::Write;
++            let _ = write!(line, " {}={}/{}/{}", NAMES[i], s / c, m, c);
++        }
++    }
++    let dropped = DROPPED.swap(0, Ordering::Relaxed);
++    log::info!("PROBE {EVERY} ticks (avg/max us/count):{line} dropped={dropped}");
++}
+diff --git a/embedded/esp-hal/crates/wasm-runtime/src/service.rs b/embedded/esp-hal/crates/wasm-runtime/src/service.rs
+index d7079cb..1412018 100644
+--- a/embedded/esp-hal/crates/wasm-runtime/src/service.rs
++++ b/embedded/esp-hal/crates/wasm-runtime/src/service.rs
+@@ -16,7 +16,6 @@ use core::mem::MaybeUninit;
+ use core::ptr::addr_of;
+ 
+ use cell_protocol::Sri;
+-use embassy_futures::yield_now;
+ use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
+ use embassy_sync::channel::Receiver;
+ use embassy_sync::signal::Signal;
+@@ -117,6 +116,10 @@ type ModuleItem = (
+     Option<Vec<u8>>,
+ );
+ 
++/// Raised by the WAMR thread each time it takes a message off the RTOS queue, so a pump facing a
++/// full queue can await room instead of blocking the executor inside the RTOS call.
++static CELL_QUEUE_FREED: Signal<CriticalSectionRawMutex, ()> = Signal::new();
++
+ /// Gathers the system's data and provides back-pressure via embassy channels to the RTOS queue.
+ pub async fn cell_pump(cell_message_queue: &'static QueueHandle, liveness: fn()) {
+     log::info!("Starting Cell task");
+@@ -128,10 +131,13 @@ pub async fn cell_pump(cell_message_queue: &'static QueueHandle, liveness: fn())
+         let msg = CELL_MSG_CHANNEL.receive().await;
+         let boxed = Box::new(msg);
+         let ptr = Box::into_raw(boxed);
++        let t_pump = crate::probe::now();
+         // safety: Made sure already the type is correct in `WamrContext`
+         unsafe {
+-            // Use deadline, so that we can avoid deadlocking the embassy executor if the Cell is
+-            // waiting on us
++            // Never block in the RTOS call: this task shares the executor with the request
++            // handler that serves the cell's host calls, so a blocking wait here stalls every
++            // handoff while the queue is full. Try, and if full, await the WAMR thread taking a
++            // message (re-checking termination at least every 100 ms).
+             loop {
+                 // The cell is tearing down; forwarding now would misdeliver this message
+                 // to whatever cell deploys next, so drop it instead of pushing.
+@@ -139,12 +145,17 @@ pub async fn cell_pump(cell_message_queue: &'static QueueHandle, liveness: fn())
+                     drop(Box::from_raw(ptr));
+                     break;
+                 }
+-                if cell_message_queue.send_to_back(addr_of!(ptr).cast(), Some(1_000)) {
++                if cell_message_queue.send_to_back(addr_of!(ptr).cast(), Some(0)) {
+                     break;
+                 }
+-                yield_now().await;
++                let _ = embassy_time::with_timeout(
++                    embassy_time::Duration::from_millis(100),
++                    CELL_QUEUE_FREED.wait(),
++                )
++                .await;
+             }
+         }
++        crate::probe::add(crate::probe::PUMP, t_pump);
+     }
+ }
+ 
+@@ -291,6 +302,7 @@ impl WamrContext {
+                     .cell_message_queue
+                     .receive(ptr_out.as_mut_ptr().cast(), Some(500_000));
+                 if did_receive {
++                    CELL_QUEUE_FREED.signal(());
+                     break;
+                 } else if is_terminated() {
+                     return CellMessage::Destroy;
+@@ -529,7 +541,13 @@ extern "C" fn wamr_runtime(wamr_context_box: *mut c_void) {
+         // Process cell until destroyed
+         log::debug!("[WAMR] Cell awaiting messages");
+         loop {
++            let t_wait = crate::probe::now();
+             let msg = ctx.wait_for_cell_message();
++            let t_msg = crate::probe::now();
++            let is_tick = matches!(msg, CellMessage::TimerTick { .. });
++            if is_tick {
++                crate::probe::add(crate::probe::WAIT, t_wait);
++            }
+             log::debug!("[WAMR] Received Cell message: {msg:?}");
+             match msg {
+                 CellMessage::Command {
+@@ -561,6 +579,8 @@ extern "C" fn wamr_runtime(wamr_context_box: *mut c_void) {
+                     if let Err(e) = runtime.handle_timer_tick(&export_name) {
+                         log::error!("Timer tick error for '{export_name}': {e}");
+                     }
++                    crate::probe::add(crate::probe::TICK, t_msg);
++                    crate::probe::tick_done();
+                 }
+                 #[cfg(feature = "ble")]
+                 CellMessage::BleCallback {

@@ -1,0 +1,15 @@
+[package]
+name = "counter"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[package.metadata.myrmic]
+heap_size = 32_768
+
+[dependencies]
+myrmic-sdk = { git = "https://github.com/peeriot/myrmic.git", rev = "394b373b" }
+
+serde = { version = "1", default-features = false, features = ["alloc", "derive"] }
+# Standalone: keeps cargo from attaching this copy to the myrmic repo workspace.
+[workspace]

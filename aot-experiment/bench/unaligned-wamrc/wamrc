@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Experiment: forwards to the real wamrc, adding +unaligned-scalar-mem to the CPU features
+# Myrmic's aot-compiler passes, plus any flags in $WAMRC_EXTRA (word-split, placed first: wamrc ignores options after the input file). Used by
+# build.sh's "unal" and "nat" variants via PATH.
+args=()
+for a in "$@"; do
+  [ "$a" = "--cpu-features=+i,+m,+a,+c" ] && a="--cpu-features=+i,+m,+a,+c,+unaligned-scalar-mem"
+  args+=("$a")
+done
+# shellcheck disable=SC2086
+exec /Users/melkam/.cargo/bin/wamrc $WAMRC_EXTRA "${args[@]}"
